@@ -1,0 +1,227 @@
+[
+  {
+    "qacId": "QAC-001",
+    "question": "What fastener torque should be used for M3 screws attaching PART-004 PCB standoffs to the 1.5 mm aluminium base plate?",
+    "answer": "PART-004 M3×8 nylon-insert standoffs in 1.5 mm 5052-H32 aluminium: recommended torque 0.5–0.6 N·m. Exceeding 0.7 N·m risks thread stripping in the aluminium. Use calibrated torque driver; locking compound not required due to nylon insert.",
+    "action": "Updated assembly drawing ASM-002 torque callout for PART-004 to 0.55 N·m ±0.05 N·m. Added torque audit step to work instruction WI-002-A.",
+    "status": "resolved",
+    "timestamp": "2025-02-14T09:22:00Z",
+    "tags": ["fastener", "torque", "aluminium", "pcb-mounting"]
+  },
+  {
+    "qacId": "QAC-002",
+    "question": "Is PART-012 316 stainless steel bracket suitable for outdoor UV exposure in the antenna mount application?",
+    "answer": "PART-012 316 SS bracket has excellent corrosion resistance but no inherent UV protection. Passivation per ASTM A967 is specified. For UV-exposed environments, the stainless steel substrate is unaffected by UV; however, any associated polymer components (gaskets, labels) must be UV-stabilised separately.",
+    "action": "Confirmed PART-012 approved for outdoor use. Added UV-stable label specification PART-047 to ASM-010 BOM. No change to bracket material.",
+    "status": "resolved",
+    "timestamp": "2025-03-05T14:11:00Z",
+    "tags": ["material", "outdoor", "corrosion", "stainless-steel", "UV"]
+  },
+  {
+    "qacId": "QAC-003",
+    "question": "What is the minimum wall thickness for the PA66-GF30 injection-moulded sensor housing to maintain IP67 integrity at PART-019 gland entry points?",
+    "answer": "For PA66-GF30 with M20 threaded gland entries (PART-019), minimum wall thickness around the boss is 3.5 mm to provide adequate thread engagement (≥4 full threads) and prevent boss cracking under gland tightening torque of 3 N·m. Nominal wall 2.5 mm is acceptable in non-loaded regions.",
+    "action": "Revised ASM-003 housing CAD model: gland entry boss wall increased from 3.0 mm to 3.8 mm. Updated drawing DWG-003-C. PART-019 torque spec confirmed at 3 N·m in WI-003-B.",
+    "status": "resolved",
+    "timestamp": "2025-03-18T10:45:00Z",
+    "tags": ["injection-moulding", "IP67", "wall-thickness", "gland", "PA66-GF30"]
+  },
+  {
+    "qacId": "QAC-004",
+    "question": "Can PART-031 M4 thread-forming screws be reused after removal from the 1.5 mm CR steel motor drive enclosure panels?",
+    "answer": "Thread-forming screws like PART-031 cold-form threads on first insertion; re-insertion into the same hole is acceptable for up to 3 cycles without significant torque-off degradation. However, re-insertion into a different or stripped hole is not recommended. Recommend replacing PART-031 screws if removed more than twice.",
+    "action": "Added note to service manual SM-008: 'Replace PART-031 fasteners after third removal. Do not re-use in enlarged or damaged holes.' Flagged in spare parts list with recommended service stock quantity.",
+    "status": "resolved",
+    "timestamp": "2025-04-02T08:30:00Z",
+    "tags": ["fastener", "thread-forming", "reuse", "sheet-metal", "service"]
+  },
+  {
+    "qacId": "QAC-005",
+    "question": "What thermal interface material thickness is optimal between PART-022 IGBT module and PART-023 aluminium heat sink to meet junction temperature targets?",
+    "answer": "For PART-022 IGBT module (200 W max dissipation) and PART-023 extruded heat sink (0.72 °C/W), thermal interface material should be compressed to 0.10–0.15 mm at 25–35 psi contact pressure. Thicker pads (>0.3 mm) increase thermal resistance by 0.1–0.2 °C/W. Bergquist GP3000 or equivalent at 3.0 W/m·K recommended.",
+    "action": "Specified PART-039 (Bergquist GP3000, 0.25 mm uncompressed, 3.0 W/m·K) in ASM-007 BOM. Torque on PART-040 mounting screws set to 1.2 N·m to achieve target compression. Thermal budget updated in DOC-012.",
+    "status": "resolved",
+    "timestamp": "2025-04-15T13:20:00Z",
+    "tags": ["thermal", "TIM", "IGBT", "heat-sink", "junction-temperature"]
+  },
+  {
+    "qacId": "QAC-006",
+    "question": "What is the correct O-ring groove depth for PART-033 AS568-013 O-ring on the battery compartment cover?",
+    "answer": "AS568-013 O-ring (ID 12.42 mm, cross-section 1.78 mm): groove depth 1.27–1.32 mm for face seal application, achieving 25–30% squeeze. Groove width 2.29–2.41 mm. Surface finish in groove Ra ≤1.6 µm. Avoid sharp groove corners; radius 0.25 mm minimum to prevent O-ring extrusion.",
+    "action": "Updated ASM-005 cover moulding drawing to specify groove depth 1.30 mm +0.05/-0.00 mm and groove radius 0.3 mm per AS568-013 standard. Drawing revision issued as DWG-005-D.",
+    "status": "resolved",
+    "timestamp": "2025-05-07T11:05:00Z",
+    "tags": ["O-ring", "sealing", "groove", "AS568", "battery-compartment"]
+  },
+  {
+    "qacId": "QAC-007",
+    "question": "Should PART-006 4-20mA signal wiring use shielded or unshielded cable for runs exceeding 10 metres in an industrial environment?",
+    "answer": "For 4–20 mA loops with runs >10 m in industrial environments with VFDs or other switching noise sources, shielded twisted pair (STP) is required. Shield should be grounded at the receiver (ASM-009) end only to avoid ground loop currents. Minimum shield coverage 85%. Recommend Belden 8761 or equivalent.",
+    "action": "Updated system wiring diagram WD-009-A to specify PART-006 shielded cable (Belden 8761 equivalent) for all 4–20 mA runs. Shield termination instruction added to WI-009-C.",
+    "status": "resolved",
+    "timestamp": "2025-05-22T15:40:00Z",
+    "tags": ["wiring", "4-20mA", "shielded-cable", "EMI", "grounding"]
+  },
+  {
+    "qacId": "QAC-008",
+    "question": "What is the maximum operating temperature for PART-045 silicone foam gasket material in the motor drive enclosure application?",
+    "answer": "PART-045 closed-cell silicone foam (MIL-C-6183 grade) is rated to +125 °C continuous service. The motor drive enclosure internal temperature is expected to reach 75 °C at full load. This provides 50 °C margin. Compression set at 70 °C for 168 hours per ASTM D395 is ≤15%, which is acceptable for IP54 sealing.",
+    "action": "PART-045 confirmed suitable for ASM-008 application. No change required. Recorded as reusable decision for similar gasket material selections in industrial enclosures.",
+    "status": "reused",
+    "timestamp": "2025-06-03T09:15:00Z",
+    "tags": ["gasket", "silicone", "temperature", "IP54", "enclosure"]
+  },
+  {
+    "qacId": "QAC-009",
+    "question": "What PCB edge clearance is required for PART-009 conformal coating on the signal conditioning module to avoid coating contamination of PART-010 terminal block solder joints?",
+    "answer": "Conformal coating (PART-009, acrylic type) should maintain 2.0 mm clearance from all through-hole component solder fillets per IPC-CC-830. For PART-010 pluggable terminal blocks, an additional 1.0 mm clearance from the contact interface is required to prevent ingress into mating contacts. Total recommended exclusion zone: 3.0 mm around terminal block footprint.",
+    "action": "Added conformal coat exclusion zone to ASM-009 PCB fabrication drawing: 3.0 mm keep-out around all PART-010 terminal block locations. Masking fixture DWG-009-MASK-A updated to reflect new zones.",
+    "status": "resolved",
+    "timestamp": "2025-06-17T12:30:00Z",
+    "tags": ["conformal-coat", "PCB", "terminal-block", "IPC", "exclusion-zone"]
+  },
+  {
+    "qacId": "QAC-010",
+    "question": "Can PART-015 zinc die-cast bracket be used in place of PART-016 aluminium bracket for the controller board mounting application?",
+    "answer": "PART-015 zinc die-cast (Zamak 3) has density 6.6 g/cm³ vs PART-016 aluminium 6061 at 2.7 g/cm³, adding approximately 18 g per bracket. Mechanical properties are lower (UTS 283 MPa vs 310 MPa). Zinc die-cast is acceptable for low-vibration applications but not recommended where IEC 60068-2-64 random vibration testing is required.",
+    "action": "PART-016 aluminium bracket retained for ASM-002. PART-015 zinc bracket approved as cost-down option for non-vibration-rated variants. Part substitution matrix updated in engineering database.",
+    "status": "answered",
+    "timestamp": "2025-07-01T10:00:00Z",
+    "tags": ["material-substitution", "die-cast", "aluminium", "vibration", "bracket"]
+  },
+  {
+    "qacId": "QAC-011",
+    "question": "What solder paste volume is required for PART-027 QFN-28 pads to achieve minimum 75% solder coverage per IPC-7711?",
+    "answer": "For PART-027 QFN-28 (0.5 mm pitch, pad 0.3×0.25 mm): stencil aperture 0.28×0.23 mm, area ratio 0.63 which meets the ≥0.66 minimum for 0.12 mm stencil thickness. Recommend 0.15 mm stencil to achieve area ratio 0.79. Thermal pad central aperture should use 4×4 array of 0.6 mm squares covering 65% of exposed pad area.",
+    "action": "Stencil design updated to 0.15 mm thickness for ASM-009 board. PART-027 apertures revised per above. Solder paste volume qualification run scheduled for week 28-2025.",
+    "status": "resolved",
+    "timestamp": "2025-07-14T14:55:00Z",
+    "tags": ["solder-paste", "QFN", "stencil", "IPC", "SMT"]
+  },
+  {
+    "qacId": "QAC-012",
+    "question": "What is the minimum bend radius for PART-035 26 AWG ribbon cable in the front panel flex routing?",
+    "answer": "PART-035 26 AWG PVC ribbon cable minimum dynamic bend radius is 10× conductor diameter = 10 × 1.1 mm = 11 mm. For static installations the minimum is 5× = 5.5 mm. The current front panel routing has a 6 mm static bend radius, which is acceptable. Dynamic flexing in this assembly is not expected.",
+    "action": "Front panel cable routing confirmed acceptable. Added note to ASM-006 assembly drawing: 'Minimum cable bend radius 6 mm. Do not kink or exceed bend during service.' No design change required.",
+    "status": "resolved",
+    "timestamp": "2025-07-28T11:10:00Z",
+    "tags": ["cable", "bend-radius", "ribbon-cable", "front-panel", "routing"]
+  },
+  {
+    "qacId": "QAC-013",
+    "question": "Should PART-041 tin-plated RF shield be reflowed at the same profile as the rest of the PCB assembly or hand-soldered?",
+    "answer": "PART-041 tin-plated RF shield (0.5 mm CR steel, 8 g mass) can be reflow-soldered using standard SAC305 profile. Thermal mass is manageable; peak board temperature at shield pad location is within 5°C of open-board reference. Ensure solder paste stencil aperture is 0.8× pad area to avoid bridging on the continuous perimeter pads.",
+    "action": "PART-041 added to SMT reflow process for ASM-004. Stencil aperture set to 80% for shield perimeter pads. Reflow profile validation coupon added to first production panel.",
+    "status": "resolved",
+    "timestamp": "2025-08-05T09:45:00Z",
+    "tags": ["RF-shield", "reflow", "SMT", "solder", "PCB-assembly"]
+  },
+  {
+    "qacId": "QAC-014",
+    "question": "What is the maximum allowable warpage for PART-048 1.6 mm FR4 PCB in the signal conditioning module to ensure reliable QFN soldering?",
+    "answer": "IPC-6012 Class 2 maximum warpage for PART-048 1.6 mm FR4 PCB is 0.75% of board diagonal. For a 150 mm × 100 mm board the diagonal is 180 mm, so maximum warpage is 1.35 mm. For QFN components, practical limit is lower: warpage should not exceed 0.5 mm across the component footprint area (typically 5 mm × 5 mm zone).",
+    "action": "Incoming inspection criterion for PART-048 set at 0.5 mm maximum warpage measured across any 50 mm span. Added to IQC checklist IQC-009-A. Boards exceeding limit returned to supplier.",
+    "status": "resolved",
+    "timestamp": "2025-08-19T13:25:00Z",
+    "tags": ["PCB", "warpage", "FR4", "IPC-6012", "QFN", "IQC"]
+  },
+  {
+    "qacId": "QAC-015",
+    "question": "Can PART-002 aluminium 5052-H32 sheet be substituted with 6061-T6 for the power supply unit base plate to reduce machining cost?",
+    "answer": "PART-002 (5052-H32) has better formability for sheet metal bending operations. 6061-T6 has higher yield strength (276 MPa vs 193 MPa) but lower formability; minimum bend radius increases from 1×t to 2×t. For the PSU base plate with no tight bends, 6061-T6 is acceptable. Verify any existing bend features meet the 2×t minimum before approving substitution.",
+    "action": "Engineering review of ASM-001 base plate confirmed no bends tighter than 3×t (4.5 mm for 1.5 mm sheet). PART-002 substitution to 6061-T6 approved for run >500 units. ECO-2025-141 raised. Cost saving: $1.20/unit.",
+    "status": "resolved",
+    "timestamp": "2025-09-02T10:50:00Z",
+    "tags": ["material-substitution", "aluminium", "5052", "6061", "formability", "cost-down"]
+  },
+  {
+    "qacId": "QAC-016",
+    "question": "What thread engagement length is required for PART-031 M4 screws into PART-050 PEM press-nut inserts in 1.5 mm steel for the motor drive enclosure?",
+    "answer": "PART-050 PEM S-M4-2 self-clinching nut has 4.8 mm thread engagement length (4.8 mm nut protrusion). With PART-031 M4×10 screw and 1.5 mm panel, total engagement is 4.8 mm = 1.2× pitch minimum per IFI-115, which is marginally acceptable. Upgrade to PART-051 PEM S-M4-3 (7.9 mm engagement) recommended for torque loads >2 N·m.",
+    "action": "PART-050 replaced with PART-051 (PEM S-M4-3) on all structural mounting locations in ASM-008. Cosmetic/access cover locations retain PART-050. BOM updated. ECO-2025-156 issued.",
+    "status": "resolved",
+    "timestamp": "2025-09-16T14:00:00Z",
+    "tags": ["PEM-nut", "thread-engagement", "fastener", "sheet-metal", "motor-drive"]
+  },
+  {
+    "qacId": "QAC-017",
+    "question": "What is the recommended preload torque for PART-007 M6 hex bolts securing PART-023 heat sink to the motor drive chassis?",
+    "answer": "PART-007 M6×16 stainless steel hex bolt (A2-70) into aluminium chassis: recommended torque 4.0–5.0 N·m using calibrated torque wrench. Anti-seize compound (Molykote P-37) required to prevent galvanic corrosion between stainless fastener and aluminium. Spring washer PART-052 specified to maintain preload under thermal cycling.",
+    "action": "Updated ASM-007 assembly drawing with torque specification 4.5 N·m ±0.5 N·m for PART-007 bolts. Anti-seize compound PART-053 (Molykote P-37) added to BOM. Torque audit added to final inspection FI-007-A.",
+    "status": "resolved",
+    "timestamp": "2025-10-01T09:00:00Z",
+    "tags": ["torque", "M6", "heat-sink", "anti-seize", "galvanic-corrosion"]
+  },
+  {
+    "qacId": "QAC-018",
+    "question": "Is the 0.5 mm tin plating on PART-041 RF shield sufficient to maintain solderability after 12 months of shelf storage?",
+    "answer": "Tin plating at 0.5 mm thickness is susceptible to intermetallic growth (Cu6Sn5) at the copper interface, which reduces solderability after 6–12 months at ambient. ASTM B545 requires minimum 2.5 µm tin plating for extended shelf life. PART-041 current specification of 5–8 µm meets this. Verify date codes at incoming inspection; parts older than 12 months require solderability testing per J-STD-003.",
+    "action": "Added incoming inspection rule for PART-041: reject date codes >12 months old. Solderability re-qualification test added as conditional step in IQC-004-A. Storage conditions specified as ≤25°C, ≤60% RH.",
+    "status": "reused",
+    "timestamp": "2025-10-14T11:30:00Z",
+    "tags": ["tin-plating", "solderability", "shelf-life", "RF-shield", "IQC"]
+  },
+  {
+    "qacId": "QAC-019",
+    "question": "What is the correct stack-up for the conformal coating exclusion zone around PART-010 pluggable terminal blocks on the signal conditioning module?",
+    "answer": "Per QAC-009 established precedent: PART-010 pluggable terminal blocks require a 3.0 mm conformal coating exclusion zone around the entire footprint. This applies to all instances of PART-010 on PART-048 PCB in ASM-009. The ruling has been codified in the master coating specification MSP-009.",
+    "action": "No new action required. QAC-009 ruling reused for ASM-009 Rev 2 board layout. Masking fixture drawing updated to DWG-009-MASK-B to accommodate new connector positions on Rev 2.",
+    "status": "reused",
+    "timestamp": "2025-10-28T14:45:00Z",
+    "tags": ["conformal-coat", "terminal-block", "reuse", "PCB", "masking"]
+  },
+  {
+    "qacId": "QAC-020",
+    "question": "What surface roughness is acceptable for PART-023 aluminium heat sink base to ensure adequate contact with PART-022 IGBT module?",
+    "answer": "For direct metal contact without TIM, surface roughness Ra ≤0.4 µm is required. With thermal interface material (PART-039, 3.0 W/m·K), the TIM fills surface asperities and Ra ≤3.2 µm is acceptable, matching standard machined finish. Flatness ≤0.05 mm over the IGBT contact footprint (40 mm × 40 mm).",
+    "action": "PART-023 machining drawing updated: base surface Ra ≤3.2 µm (N7 finish) and flatness ≤0.05 mm over 40×40 mm zone. These are achievable by standard milling without additional lapping. Cost confirmed unchanged.",
+    "status": "resolved",
+    "timestamp": "2025-11-05T10:15:00Z",
+    "tags": ["surface-finish", "heat-sink", "thermal-contact", "flatness", "machining"]
+  },
+  {
+    "qacId": "QAC-021",
+    "question": "Can the PART-055 nylon standoff spacing be reduced from 60 mm to 40 mm on the main controller board to accommodate an additional component in row 3?",
+    "answer": "PART-055 M3 nylon standoffs at 40 mm spacing for a 1.6 mm PCB: maximum unsupported span increases from 60 mm to 40 mm between supports, which reduces mid-span deflection under 5g vibration. At 40 mm span, calculated deflection is 0.15 mm vs 0.34 mm at 60 mm. Both are within 0.5 mm PCB deflection limit for SMT components.",
+    "action": "Standoff spacing reduced to 40 mm in ASM-002 to accommodate PART-056 DC-DC converter added in ECO-2025-099. Additional PART-055 standoffs added to BOM (qty +2 per board). PCB layout updated in DWG-002-E.",
+    "status": "resolved",
+    "timestamp": "2025-11-18T13:00:00Z",
+    "tags": ["standoff", "PCB", "vibration", "deflection", "layout"]
+  },
+  {
+    "qacId": "QAC-022",
+    "question": "What is the minimum creepage and clearance distance required on PART-048 signal conditioning PCB between 24 V DC and mains-isolated circuits?",
+    "answer": "Per IEC 61010-1 for 250 V AC working voltage, Pollution Degree 2, Overvoltage Category II: minimum creepage 3.0 mm (Tracking Index Group IIIa material), minimum clearance 2.5 mm. For reinforced insulation (double fault protection), double these values: 6.0 mm creepage, 5.0 mm clearance.",
+    "action": "PCB layout review confirmed all PART-048 isolated boundary spacings meet reinforced insulation requirements: minimum measured creepage 7.2 mm, clearance 6.1 mm. Layout compliant. No change required. Measurements recorded in compliance file CF-009.",
+    "status": "answered",
+    "timestamp": "2025-12-01T09:30:00Z",
+    "tags": ["creepage", "clearance", "IEC-61010", "isolation", "PCB-layout"]
+  },
+  {
+    "qacId": "QAC-023",
+    "question": "Should PART-058 beryllium copper spring contacts in the battery compartment be installed before or after the housing PART-019 moulding paint/coating step?",
+    "answer": "PART-058 BeCu spring contacts must be installed after any paint, lacquer, or coating operations on PART-019 housing. Contact surfaces require bare metal-to-metal contact; any coating on contact areas will increase contact resistance above the 8 mΩ maximum. Contacts are installed by press-fit into slots and should not be exposed to process chemicals.",
+    "action": "Updated ASM-005 assembly sequence: PART-019 housing arrives as finished moulding (no post-mould coating); PART-058 contacts installed at sub-assembly stage 3. Work instruction WI-005-B updated to reflect correct sequence. IQC check added for contact resistance <8 mΩ.",
+    "status": "resolved",
+    "timestamp": "2025-12-10T11:45:00Z",
+    "tags": ["BeCu", "spring-contact", "assembly-sequence", "coating", "battery"]
+  },
+  {
+    "qacId": "QAC-024",
+    "question": "What pull-out force rating is required for PART-060 wire-to-board connector on the power supply output harness?",
+    "answer": "For 24 V DC power harness in ASM-001 carrying up to 10 A, the wire-to-board connector PART-060 must withstand a minimum 50 N axial pull-out force per UL 486A at the operating temperature range of –20 °C to +70 °C. Current connector specification is 45 N at 25 °C; at 70 °C pull-out force typically drops 15–20%, giving ~37 N which is below requirement.",
+    "action": "PART-060 connector upgraded to PART-060B (Molex Mini-Fit Jr equivalent, 80 N pull-out per pin at 70°C). BOM updated in ASM-001. ECO-2025-178 issued. Harness assembly tooling for PART-060B crimping purchased: tool number CT-012.",
+    "status": "resolved",
+    "timestamp": "2025-12-22T14:20:00Z",
+    "tags": ["connector", "pull-out-force", "wire-harness", "power-supply", "UL486A"]
+  },
+  {
+    "qacId": "QAC-025",
+    "question": "What is the maximum tightening torque for PART-019 M20 cable glands in the sensor module housing to avoid boss cracking in PA66-GF30?",
+    "answer": "Per gland manufacturer data and QAC-003 boss thickness ruling: PART-019 M20 cable gland in PA66-GF30 boss (wall 3.8 mm, 4 full threads): maximum tightening torque 3 N·m. Exceeding this risks boss cracking due to hoop stress. Torque should be applied in two stages: 1.5 N·m first pass, then 3.0 N·m final. IP67 seal achieved at 2.0 N·m minimum.",
+    "action": "Work instruction WI-003-B updated with two-stage torque sequence for PART-019: Stage 1: 1.5 N·m, Stage 2: 3.0 N·m. Torque driver CT-008 (0–5 N·m range) specified. QAC-003 cross-referenced. Limit posted at assembly station.",
+    "status": "reused",
+    "timestamp": "2026-01-08T10:00:00Z",
+    "tags": ["cable-gland", "torque", "PA66-GF30", "IP67", "boss-cracking"]
+  }
+]

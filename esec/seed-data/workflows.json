@@ -1,0 +1,512 @@
+[
+  {
+    "workflowId": "WF-001",
+    "name": "PCB Mounting Bracket Selection",
+    "description": "Step-by-step process for selecting and specifying a PCB mounting bracket suitable for the target assembly environment and PCB dimensions.",
+    "stepCount": 5,
+    "category": "design",
+    "steps": [
+      {
+        "stepId": "WF-001-S1",
+        "order": 1,
+        "action": "Define PCB dimensions and mass",
+        "description": "Record PCB length, width, and thickness, and estimate populated board mass including heaviest through-hole components. Document in design input sheet.",
+        "parameters": {
+          "inputs": ["pcb_length_mm", "pcb_width_mm", "pcb_thickness_mm", "pcb_mass_g"],
+          "tools": ["CAD model", "BOM weight estimate"]
+        }
+      },
+      {
+        "stepId": "WF-001-S2",
+        "order": 2,
+        "action": "Identify environmental requirements",
+        "description": "Determine operating temperature range, vibration/shock profile (IEC 60068-2 levels), and humidity class. Note whether conformal coating is required.",
+        "parameters": {
+          "inputs": ["temp_range_degC", "vibration_profile", "humidity_class"],
+          "standards": ["IEC 60068-2-6", "IEC 60068-2-64"]
+        }
+      },
+      {
+        "stepId": "WF-001-S3",
+        "order": 3,
+        "action": "Select bracket material and finish",
+        "description": "Choose between aluminium 6061-T6, zinc die-cast, or CR steel based on weight budget, vibration class, and galvanic compatibility with enclosure. Specify surface finish and any plating or anodising.",
+        "parameters": {
+          "decision_matrix": ["weight_budget_g", "vibration_class", "enclosure_material", "cost_target_usd"],
+          "options": ["Al6061-T6-anodised", "Zamak3-painted", "CR-steel-zinc-plated"]
+        }
+      },
+      {
+        "stepId": "WF-001-S4",
+        "order": 4,
+        "action": "Determine fastener pattern and standoff type",
+        "description": "Lay out mounting hole pattern aligned to PCB mounting holes. Select standoff height to provide minimum 3 mm clearance below PCB. Specify standoff thread size (M3 typical) and material compatible with bracket.",
+        "parameters": {
+          "min_clearance_mm": 3,
+          "standoff_options": ["nylon-M3", "brass-M3", "aluminium-M3"],
+          "hole_pattern_standard": "IEC 61188-7"
+        }
+      },
+      {
+        "stepId": "WF-001-S5",
+        "order": 5,
+        "action": "Validate with tolerance stack-up and DFM review",
+        "description": "Perform worst-case tolerance stack-up for PCB-to-bracket height and lateral alignment. Submit bracket design for DFM review with sheet metal or die-cast vendor. Incorporate feedback before releasing drawing.",
+        "parameters": {
+          "tolerance_method": "worst-case or RSS",
+          "dfm_checklist": ["bend_radii", "draft_angles", "minimum_flange_height"],
+          "approval_required": ["design-engineer", "manufacturing-eng"]
+        }
+      }
+    ]
+  },
+  {
+    "workflowId": "WF-002",
+    "name": "Sheet Metal Enclosure Sizing",
+    "description": "Systematic process for determining internal and external dimensions of a sheet metal enclosure to meet PCB/component fit, thermal, and IP rating requirements.",
+    "stepCount": 6,
+    "category": "design",
+    "steps": [
+      {
+        "stepId": "WF-002-S1",
+        "order": 1,
+        "action": "Establish internal envelope requirements",
+        "description": "List all internal components (PCBs, DIN rails, transformers, terminal blocks) with their maximum dimensions. Include wire bend radius allowances and maintenance access clearances.",
+        "parameters": {
+          "inputs": ["component_list_with_dims", "wire_bend_radius_mm", "maintenance_access_mm"],
+          "min_air_gap_mm": 10
+        }
+      },
+      {
+        "stepId": "WF-002-S2",
+        "order": 2,
+        "action": "Add thermal headroom allowance",
+        "description": "Estimate total internal power dissipation. For natural convection, add 25% internal volume margin above component envelope. For forced air, confirm air path dimensions support required CFM.",
+        "parameters": {
+          "inputs": ["total_dissipation_W", "cooling_method", "ambient_temp_degC"],
+          "natural_convection_volume_margin": 0.25
+        }
+      },
+      {
+        "stepId": "WF-002-S3",
+        "order": 3,
+        "action": "Select sheet material and thickness",
+        "description": "Choose enclosure material (G90 galvanised steel, 5052-H32 aluminium, or 304 SS) and gauge based on rigidity, weight, and IP requirements. Minimum 1.5 mm for structural panels; 1.0 mm acceptable for covers.",
+        "parameters": {
+          "material_options": ["G90-steel", "5052-H32-Al", "304-SS"],
+          "structural_min_mm": 1.5,
+          "cover_min_mm": 1.0
+        }
+      },
+      {
+        "stepId": "WF-002-S4",
+        "order": 4,
+        "action": "Define IP rating and sealing strategy",
+        "description": "Confirm required IP rating (IP54, IP65, or IP67). Select gasket material and groove geometry. Identify all penetrations (cable entries, ventilation) and specify appropriate sealing method for each.",
+        "parameters": {
+          "ip_options": ["IP54", "IP65", "IP67"],
+          "gasket_materials": ["silicone-foam", "EPDM-foam", "polyurethane"],
+          "penetration_methods": ["cable-gland", "foam-plug", "sealed-connector"]
+        }
+      },
+      {
+        "stepId": "WF-002-S5",
+        "order": 5,
+        "action": "Lay out cable entry and DIN rail provisions",
+        "description": "Position cable entry knockouts maintaining minimum 20 mm edge distance for gland locknuts. Space DIN rail mounting holes on 35 mm TS35 standard centres. Ensure vertical cable fall does not obstruct component access.",
+        "parameters": {
+          "din_rail_standard": "EN 60715 TS35",
+          "min_edge_distance_mm": 20,
+          "gland_clearance_above_floor_mm": 50
+        }
+      },
+      {
+        "stepId": "WF-002-S6",
+        "order": 6,
+        "action": "Generate DFM-ready drawing and request vendor quote",
+        "description": "Produce fully dimensioned 2D drawing with all bend lines, hole schedules, and finish callouts. Include material specification, coating spec, and quantity breaks. Issue RFQ to minimum two sheet metal fabricators.",
+        "parameters": {
+          "drawing_standard": "ASME Y14.5-2018",
+          "finish_callout_required": true,
+          "min_vendor_quotes": 2,
+          "quantity_breaks": [50, 200, 500]
+        }
+      }
+    ]
+  },
+  {
+    "workflowId": "WF-003",
+    "name": "Fastener Selection for Vibration Environment",
+    "description": "Process for selecting fastener type, material, locking method, and torque specification for assemblies subject to IEC 60068-2-6 sinusoidal or IEC 60068-2-64 random vibration.",
+    "stepCount": 4,
+    "category": "design",
+    "steps": [
+      {
+        "stepId": "WF-003-S1",
+        "order": 1,
+        "action": "Characterise the vibration environment",
+        "description": "Obtain vibration specification (g-level, frequency range, duration). Identify resonant frequencies of the assembly if known from FEA or prior test data. Classify severity per IEC 60068-2-6 table.",
+        "parameters": {
+          "inputs": ["vibration_spec_g", "frequency_range_hz", "test_duration_h"],
+          "severity_classes": ["IEC-class-1", "IEC-class-2", "IEC-class-3"]
+        }
+      },
+      {
+        "stepId": "WF-003-S2",
+        "order": 2,
+        "action": "Select fastener thread size and engagement length",
+        "description": "Size thread for shear and tension loads with 3× safety factor. Minimum thread engagement 1.5× diameter in steel, 2.0× diameter in aluminium. Avoid over-sizing as it increases weight and assembly time.",
+        "parameters": {
+          "safety_factor": 3,
+          "engagement_in_steel_x_diameter": 1.5,
+          "engagement_in_aluminium_x_diameter": 2.0
+        }
+      },
+      {
+        "stepId": "WF-003-S3",
+        "order": 3,
+        "action": "Select locking mechanism",
+        "description": "Choose locking method appropriate to vibration severity: nylon-insert nut (Nyloc) for moderate vibration, chemical thread-lock (Loctite 243) for continuous vibration, safety wire for critical flight-grade applications. Avoid split washers alone for vibration environments.",
+        "parameters": {
+          "locking_options": ["nyloc-nut", "loctite-243", "loctite-271", "safety-wire", "wedge-lock-washer"],
+          "split_washer_approved": false
+        }
+      },
+      {
+        "stepId": "WF-003-S4",
+        "order": 4,
+        "action": "Specify torque and document on drawing",
+        "description": "Calculate torque for 70% of proof load using appropriate K-factor (0.2 dry, 0.15 lubricated). Add torque value to assembly drawing with ±10% tolerance band. Specify calibrated torque driver class and calibration interval.",
+        "parameters": {
+          "preload_fraction": 0.7,
+          "k_factor_dry": 0.2,
+          "k_factor_lubricated": 0.15,
+          "torque_tolerance_pct": 10,
+          "driver_calibration_interval_months": 12
+        }
+      }
+    ]
+  },
+  {
+    "workflowId": "WF-004",
+    "name": "Thermal Management Layout",
+    "description": "Structured process for planning the thermal management strategy of a power electronics assembly, from heat source identification through to heat sink specification.",
+    "stepCount": 5,
+    "category": "thermal",
+    "steps": [
+      {
+        "stepId": "WF-004-S1",
+        "order": 1,
+        "action": "Identify and quantify heat sources",
+        "description": "List all power-dissipating components with part numbers, maximum continuous dissipation, and thermal resistance junction-to-case. Include conduction and convection losses for passive components.",
+        "parameters": {
+          "inputs": ["component_list", "dissipation_W_each", "Rjc_degC_per_W"],
+          "include_passive_derating": true
+        }
+      },
+      {
+        "stepId": "WF-004-S2",
+        "order": 2,
+        "action": "Define thermal budget",
+        "description": "Set maximum allowable junction temperatures for each device (typically 80% of rated Tj max for reliability). Calculate allowable case temperature Tc = Tj_max – (P × Rjc). This defines the heat sink performance target.",
+        "parameters": {
+          "derating_factor": 0.8,
+          "inputs": ["Tj_max_degC", "dissipation_W", "Rjc"],
+          "output": "Tc_max_degC"
+        }
+      },
+      {
+        "stepId": "WF-004-S3",
+        "order": 3,
+        "action": "Select cooling method and heat sink",
+        "description": "Choose natural convection, forced air, or liquid cooling based on power density and space constraints. For forced air, select fan and heat sink combination to meet Rth_sa ≤ (Tc_max – Ta) / P_total. Verify heat sink thermal resistance from vendor datasheet or CFD.",
+        "parameters": {
+          "cooling_methods": ["natural-convection", "forced-air", "liquid-cold-plate"],
+          "inputs": ["Tc_max_degC", "ambient_temp_degC", "total_power_W"],
+          "output": "Rth_sa_required_degC_per_W"
+        }
+      },
+      {
+        "stepId": "WF-004-S4",
+        "order": 4,
+        "action": "Specify thermal interface material",
+        "description": "Select TIM conductivity and thickness to minimise Rth_cs. For bond-line thickness ≤0.15 mm and conductivity ≥3 W/m·K, Rth_cs ≤0.05 °C/W·cm². Specify mounting torque to achieve required contact pressure (typically 25–35 psi for pad materials).",
+        "parameters": {
+          "target_rth_cs_max": 0.05,
+          "bond_line_target_mm": 0.15,
+          "min_conductivity_W_per_mK": 3.0,
+          "contact_pressure_psi": [25, 35]
+        }
+      },
+      {
+        "stepId": "WF-004-S5",
+        "order": 5,
+        "action": "Validate with thermal simulation and test",
+        "description": "Run steady-state thermal simulation at worst-case ambient and maximum load. Verify all junction temperatures meet budget. Plan thermocouple placement for first-article thermal test. Record and compare simulation vs measured results.",
+        "parameters": {
+          "simulation_tool": "FEA or Flotherm",
+          "test_standard": "IEC 60068-2-2",
+          "measurement_points": ["junction", "case", "heat-sink-base", "ambient"],
+          "acceptance_criterion": "Tj < 0.8 × Tj_rated"
+        }
+      }
+    ]
+  },
+  {
+    "workflowId": "WF-005",
+    "name": "DFM Review Checklist",
+    "description": "Comprehensive design-for-manufacturing review process to be completed before releasing a new or revised assembly drawing to the manufacturing vendor.",
+    "stepCount": 7,
+    "category": "manufacturing",
+    "steps": [
+      {
+        "stepId": "WF-005-S1",
+        "order": 1,
+        "action": "Verify material and finish specifications",
+        "description": "Confirm all materials are specified on drawing with grade and condition (e.g., 5052-H32, G90 galvanised). Finish callouts include method, thickness, and applicable standard. No undefined 'as machined' or 'standard finish' callouts permitted.",
+        "parameters": {
+          "required_callouts": ["material-grade", "finish-method", "finish-thickness", "applicable-standard"],
+          "forbidden_terms": ["as-machined", "standard-finish", "TBD"]
+        }
+      },
+      {
+        "stepId": "WF-005-S2",
+        "order": 2,
+        "action": "Check minimum bend radii for sheet metal",
+        "description": "Verify all sheet metal bend radii are ≥ the minimum for the specified material and gauge. Typical minimums: Al 5052-H32 1×t, Al 6061-T6 2×t, CR steel 0.5×t. Flag any tighter bends for vendor discussion.",
+        "parameters": {
+          "bend_radius_table": {
+            "5052-H32": "1x_t",
+            "6061-T6": "2x_t",
+            "CR-steel-1018": "0.5x_t"
+          }
+        }
+      },
+      {
+        "stepId": "WF-005-S3",
+        "order": 3,
+        "action": "Review hole sizing and edge distances",
+        "description": "Confirm hole diameters are per fastener nominal + clearance per ISO 286. Minimum edge distance from centre of any hole: 2× hole diameter. Minimum hole-to-hole spacing: 3× hole diameter. Check that punched holes do not violate these distances to prevent edge burring.",
+        "parameters": {
+          "min_edge_distance_x_diameter": 2,
+          "min_hole_spacing_x_diameter": 3,
+          "clearance_standard": "ISO 286-1"
+        }
+      },
+      {
+        "stepId": "WF-005-S4",
+        "order": 4,
+        "action": "Validate tolerances against manufacturing capability",
+        "description": "Review all tolerances on the drawing. Flag any feature tolerance tighter than ±0.1 mm for CNC, ±0.3 mm for sheet metal, or ±0.5 mm for injection moulding as requiring vendor confirmation. Avoid mixed-unit drawings.",
+        "parameters": {
+          "tolerance_capabilities": {
+            "CNC_machining": 0.1,
+            "sheet_metal": 0.3,
+            "injection_moulding": 0.5
+          },
+          "drawing_unit": "mm"
+        }
+      },
+      {
+        "stepId": "WF-005-S5",
+        "order": 5,
+        "action": "Confirm thread specifications and hardware inserts",
+        "description": "Verify all tapped holes specify thread standard (ISO metric or UNC), tolerance class, and minimum thread depth. Self-clinching hardware (PEM nuts, standoffs) must be identified by manufacturer part number. Confirm panel thickness meets press-in requirements.",
+        "parameters": {
+          "thread_standard": ["ISO-metric", "UNC"],
+          "pem_insert_verification": ["panel_thickness", "hardness_HRB", "hole_size_tolerance"]
+        }
+      },
+      {
+        "stepId": "WF-005-S6",
+        "order": 6,
+        "action": "Assess assembly and disassembly access",
+        "description": "Confirm tool access is available for all fasteners (minimum 25 mm clear above screw head for standard screwdriver). Check that any components requiring field replacement are accessible without removing more than two fasteners. Document any restricted access items.",
+        "parameters": {
+          "min_tool_clearance_mm": 25,
+          "max_fasteners_for_field_access": 2
+        }
+      },
+      {
+        "stepId": "WF-005-S7",
+        "order": 7,
+        "action": "Issue DFM review report and track vendor feedback",
+        "description": "Compile DFM findings into a numbered action list with severity (critical/major/minor). Send to vendor with 5 business day response deadline. Incorporate accepted changes into drawing revision. Close all critical items before first article approval.",
+        "parameters": {
+          "severity_levels": ["critical", "major", "minor"],
+          "vendor_response_days": 5,
+          "closure_requirement": "all-critical-before-first-article"
+        }
+      }
+    ]
+  },
+  {
+    "workflowId": "WF-006",
+    "name": "Vendor RFQ Preparation",
+    "description": "Process for preparing a complete and unambiguous Request for Quotation package to obtain accurate and comparable quotes from contract manufacturing vendors.",
+    "stepCount": 4,
+    "category": "procurement",
+    "steps": [
+      {
+        "stepId": "WF-006-S1",
+        "order": 1,
+        "action": "Assemble drawing and specification package",
+        "description": "Collect current revision drawings, 3D STEP files, material specifications, finish requirements, and applicable standards. Verify all documents are at the latest approved revision. Create a transmittal list with document numbers and revision letters.",
+        "parameters": {
+          "required_documents": ["2D-drawing", "3D-STEP", "material-spec", "finish-spec", "applicable-standards"],
+          "transmittal_required": true
+        }
+      },
+      {
+        "stepId": "WF-006-S2",
+        "order": 2,
+        "action": "Define quantity breaks and delivery requirements",
+        "description": "Specify prototype/NPI quantity, initial production quantity, and annual volume estimate. State required first article date, production lead time (ARO), and packaging requirements. Include Incoterms and shipping destination.",
+        "parameters": {
+          "quantity_breaks_required": ["NPI", "initial-production", "annual-volume"],
+          "incoterms_options": ["FCA", "DDP", "EXW"],
+          "packaging": ["anti-static-bag", "foam-lined-box", "bulk-tray"]
+        }
+      },
+      {
+        "stepId": "WF-006-S3",
+        "order": 3,
+        "action": "Specify quality requirements and inspection criteria",
+        "description": "State IPC class (1, 2, or 3) for PCB assemblies, or applicable manufacturing standard. Define first article inspection (FAI) requirements including dimensional report, material certs, and functional test. Specify acceptable quality level (AQL) for production inspection.",
+        "parameters": {
+          "ipc_class_options": [1, 2, 3],
+          "fai_requirements": ["dimensional-report", "material-cert", "functional-test"],
+          "aql_options": [0.65, 1.0, 2.5]
+        }
+      },
+      {
+        "stepId": "WF-006-S4",
+        "order": 4,
+        "action": "Issue RFQ and manage vendor responses",
+        "description": "Issue RFQ to minimum two qualified vendors simultaneously with 10 business day response deadline. Acknowledge all responses within 2 business days. Normalise quotes to common cost basis (unit price at each quantity break, NRE separately). Select vendor based on price, lead time, quality history, and capacity.",
+        "parameters": {
+          "min_vendors": 2,
+          "response_deadline_days": 10,
+          "selection_criteria": ["unit-price", "lead-time", "quality-score", "capacity"],
+          "nre_separate": true
+        }
+      }
+    ]
+  },
+  {
+    "workflowId": "WF-007",
+    "name": "Tolerance Stack-Up Analysis",
+    "description": "Systematic process for performing worst-case and statistical (RSS) tolerance stack-up analysis on a multi-part assembly to verify design clearances and interference fits.",
+    "stepCount": 5,
+    "category": "analysis",
+    "steps": [
+      {
+        "stepId": "WF-007-S1",
+        "order": 1,
+        "action": "Identify the critical assembly dimension",
+        "description": "Define the gap, clearance, or interference to be analysed. Sketch the assembly chain showing all contributing parts and their relevant dimensions. Identify the closing dimension (the result to be evaluated).",
+        "parameters": {
+          "inputs": ["assembly_cross_section_sketch", "critical_gap_or_clearance", "acceptance_limits"],
+          "output": "assembly_chain_diagram"
+        }
+      },
+      {
+        "stepId": "WF-007-S2",
+        "order": 2,
+        "action": "Extract nominal dimensions and tolerances",
+        "description": "List each contributing dimension with its nominal value and bilateral tolerance from the relevant drawing. Convert all unilateral or limit tolerances to bilateral form for the analysis. Note tolerance class if derived from ISO 286.",
+        "parameters": {
+          "inputs": ["drawing_dimensions", "tolerances"],
+          "format": "bilateral_symmetric",
+          "iso286_applicable": true
+        }
+      },
+      {
+        "stepId": "WF-007-S3",
+        "order": 3,
+        "action": "Perform worst-case analysis",
+        "description": "Sum all nominal dimensions algebraically (with sign convention) to get nominal closing dimension. Sum all absolute tolerances to get worst-case variation. Check that worst-case maximum and minimum closing dimensions are within acceptance limits.",
+        "parameters": {
+          "method": "worst-case",
+          "sign_convention": "positive-opens-gap",
+          "output": ["nominal_closing_dim", "WC_max", "WC_min"]
+        }
+      },
+      {
+        "stepId": "WF-007-S4",
+        "order": 4,
+        "action": "Perform RSS statistical analysis",
+        "description": "Calculate RSS tolerance as √(Σti²) where ti is each bilateral tolerance. Apply 3σ multiplier for 99.73% confidence. Compare statistical closing dimension range to acceptance limits. RSS is appropriate for assemblies with ≥5 components and normal tolerance distributions.",
+        "parameters": {
+          "method": "RSS",
+          "confidence_sigma": 3,
+          "min_components_for_rss": 5,
+          "output": ["rss_tolerance", "statistical_max", "statistical_min"]
+        }
+      },
+      {
+        "stepId": "WF-007-S5",
+        "order": 5,
+        "action": "Document results and recommend drawing changes",
+        "description": "Record analysis in tolerance report with part numbers, drawing revisions, and both worst-case and RSS results. If limits are exceeded, recommend tightening the largest contributing tolerance or adding an adjustable shim. Obtain sign-off from design engineer and manufacturing engineer.",
+        "parameters": {
+          "report_format": "tolerance-report-template-v2",
+          "sign_off_required": ["design-engineer", "manufacturing-eng"],
+          "corrective_options": ["tighten-tolerance", "add-shim", "redesign"]
+        }
+      }
+    ]
+  },
+  {
+    "workflowId": "WF-008",
+    "name": "Material Substitution Evaluation",
+    "description": "Structured evaluation process for assessing whether a proposed material substitution is technically acceptable and cost-effective before raising an Engineering Change Order.",
+    "stepCount": 4,
+    "category": "design",
+    "steps": [
+      {
+        "stepId": "WF-008-S1",
+        "order": 1,
+        "action": "Document substitution proposal and driver",
+        "description": "Record the original material (with part number and specification), the proposed substitute, and the reason for change (cost reduction, supply shortage, lead time, or performance improvement). Identify all assemblies and drawings affected.",
+        "parameters": {
+          "inputs": ["original_material_pn", "substitute_material_pn", "change_driver", "affected_assemblies"],
+          "change_drivers": ["cost-reduction", "supply-shortage", "lead-time", "performance"]
+        }
+      },
+      {
+        "stepId": "WF-008-S2",
+        "order": 2,
+        "action": "Compare mechanical and thermal properties",
+        "description": "Tabulate key properties for original and substitute: UTS, yield strength, elongation, density, thermal conductivity, CTE, and hardness. Identify any property that is worse in the substitute and assess impact on part function. Check formability if the part involves bending or deep drawing.",
+        "parameters": {
+          "properties_to_compare": ["UTS_MPa", "yield_MPa", "elongation_pct", "density_g_cm3", "thermal_cond_W_mK", "CTE_ppm_K", "hardness"],
+          "formability_check_required": true
+        }
+      },
+      {
+        "stepId": "WF-008-S3",
+        "order": 3,
+        "action": "Assess compatibility and regulatory compliance",
+        "description": "Check galvanic compatibility with mating materials. Verify substitute meets all applicable environmental regulations (RoHS, REACH, WEEE). Confirm any customer-specific material restrictions (e.g., no beryllium copper in consumer products). Review flammability rating if enclosure material.",
+        "parameters": {
+          "galvanic_series_check": true,
+          "regulations": ["RoHS", "REACH", "WEEE"],
+          "flammability_standard": "UL94",
+          "customer_restrictions_check": true
+        }
+      },
+      {
+        "stepId": "WF-008-S4",
+        "order": 4,
+        "action": "Approve substitution and raise ECO",
+        "description": "If all checks pass, document approval with engineering sign-off and raise Engineering Change Order. Specify the effective serial number or date of implementation. Update BOM, drawings, and any affected work instructions. Plan qualification samples for first production run with substitute material.",
+        "parameters": {
+          "approval_required": ["design-engineer", "manufacturing-eng", "quality"],
+          "eco_fields": ["effective-sn", "affected-drawings", "bom-update", "wi-update"],
+          "qualification_samples": true
+        }
+      }
+    ]
+  }
+]
