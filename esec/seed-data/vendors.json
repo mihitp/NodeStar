@@ -1,0 +1,77 @@
+[
+  {
+    "vendorId": "VND-001",
+    "name": "Apex Sheet Metal Fabrication",
+    "capabilities": [
+      "CNC punching",
+      "CNC bending (press brake)",
+      "MIG and TIG welding",
+      "powder coating (RAL colours)",
+      "zinc plating",
+      "hardware insertion (PEM fasteners)",
+      "sheet thickness 0.8–6.0 mm"
+    ],
+    "leadTimeDays": 35,
+    "location": "Penang, Malaysia"
+  },
+  {
+    "vendorId": "VND-002",
+    "name": "Brightline Thermal Solutions",
+    "capabilities": [
+      "aluminium extrusion (custom profiles)",
+      "CNC machining of extrusions",
+      "heat pipe integration",
+      "anodising (Type II and Type III)",
+      "thermal resistance testing",
+      "fan-heat sink assembly",
+      "6063-T5 and 6061-T6 alloys"
+    ],
+    "leadTimeDays": 56,
+    "location": "Shenzhen, China"
+  },
+  {
+    "vendorId": "VND-003",
+    "name": "Precision Mould & Plastics Sdn Bhd",
+    "capabilities": [
+      "injection moulding (PA66, PA66-GF30, ABS, PC, POM)",
+      "tooling design and fabrication",
+      "insert moulding",
+      "ultrasonic welding",
+      "IP seal testing",
+      "secondary painting and labelling",
+      "single cavity to 16-cavity tooling"
+    ],
+    "leadTimeDays": 70,
+    "location": "Johor Bahru, Malaysia"
+  },
+  {
+    "vendorId": "VND-004",
+    "name": "EuroPCB Contract Manufacturing",
+    "capabilities": [
+      "PCB assembly (SMT and through-hole)",
+      "IPC Class 2 and Class 3",
+      "AOI and X-ray inspection",
+      "conformal coating (acrylic and polyurethane)",
+      "functional test",
+      "box build assembly",
+      "lead-free and leaded processes"
+    ],
+    "leadTimeDays": 21,
+    "location": "Wroclaw, Poland"
+  },
+  {
+    "vendorId": "VND-005",
+    "name": "Delta Stampings & Springs",
+    "capabilities": [
+      "metal stamping (progressive die)",
+      "fine blanking",
+      "spring forming (BeCu, phosphor bronze, stainless)",
+      "tin and gold plating",
+      "RF shield fabrication",
+      "contact resistance testing",
+      "sheet thickness 0.1–2.0 mm"
+    ],
+    "leadTimeDays": 28,
+    "location": "Dongguan, China"
+  }
+]

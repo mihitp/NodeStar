@@ -1,0 +1,177 @@
+[
+  {
+    "docId": "DOC-001",
+    "title": "PCB Mounting Bracket DFM Review – Rev A",
+    "docType": "dfm-note",
+    "content": "Vendor recommends increasing bend radius on the mounting tabs from 0.5 mm to 0.8 mm to reduce crack risk in 1.5 mm CR steel. Corner notch relief holes of ∅3 mm should be added before each 90° bend. Minimum flange height revised to 8 mm to maintain punch clearance on the progressive die.",
+    "source": "Vendor A DFM Review"
+  },
+  {
+    "docId": "DOC-002",
+    "title": "Power Supply Unit Electrical Specification",
+    "docType": "spec",
+    "content": "Input range: 85–264 V AC, 47–63 Hz. Output: 24 V DC ±2%, 10 A continuous. Efficiency ≥88% at full load per EN 62368-1. Ripple and noise not to exceed 50 mVpp measured with 20 MHz BW.",
+    "source": "Internal Spec Rev 3"
+  },
+  {
+    "docId": "DOC-003",
+    "title": "Sheet Metal Enclosure RFQ – Motor Drive",
+    "docType": "rfq",
+    "content": "Request for quotation covering fabrication of ASM-008 sheet metal enclosure in 1.5 mm G90 galvanised steel. Quantity breaks at 50, 200, and 500 units required. Finish: RAL 7035 powder coat, minimum 60 µm DFT. Delivery 8 weeks ARO.",
+    "source": "Procurement RFQ-2025-047"
+  },
+  {
+    "docId": "DOC-004",
+    "title": "ECO-2025-112: Fastener Change M3 to M4 on Sensor Housing",
+    "docType": "eco",
+    "content": "Engineering Change Order replacing M3×8 pan head screws with M4×10 pan head screws on ASM-003 sensor housing cover. Change driven by field reports of thread stripping under repeated maintenance cycles. Updated torque specification: 1.8 N·m. Effective from serial number SN-2025-400 onward.",
+    "source": "ECO Board Approval 2025-09-15"
+  },
+  {
+    "docId": "DOC-005",
+    "title": "Connector Interface Board Tolerance Report",
+    "docType": "tolerance-report",
+    "content": "Worst-case tolerance stack-up analysis for D-sub connector alignment on ASM-012. Total accumulated tolerance ±0.45 mm against a nominal clearance of ±0.60 mm, leaving 0.15 mm margin. Analysis performed per ASME Y14.5-2018. No design change required.",
+    "source": "Internal Tolerance Analysis Rev 1"
+  },
+  {
+    "docId": "DOC-006",
+    "title": "Aluminium Heat Sink Vendor Feedback – Thermal Resistance",
+    "docType": "vendor-feedback",
+    "content": "Vendor B reports measured thermal resistance of 0.85 °C/W for the specified extrusion profile, slightly above the 0.80 °C/W design target. Vendor proposes adding four 4 mm longitudinal fins to reduce resistance to 0.72 °C/W at a tooling cost of $1,200. Recommend accepting the modification.",
+    "source": "Vendor B Thermal Feedback 2025-07-22"
+  },
+  {
+    "docId": "DOC-007",
+    "title": "RF Shield Assembly Dimensional Specification",
+    "docType": "spec",
+    "content": "Shield body dimensions: 85 mm × 60 mm × 12 mm (L×W×H). Wall thickness 0.5 mm ±0.05 mm. Lid engagement depth 2.0 mm minimum. Attenuation requirement: ≥40 dB from 100 MHz to 3 GHz per MIL-STD-285. Tin plating thickness: 5–8 µm over copper strike.",
+    "source": "Internal Spec Rev 2"
+  },
+  {
+    "docId": "DOC-008",
+    "title": "Battery Compartment DFM Review – Cover Seal",
+    "docType": "dfm-note",
+    "content": "Moulding vendor recommends O-ring groove dimensions per AS568-013 standard, currently drawn as custom profile. Switching to standard AS568-013 groove eliminates custom tooling and reduces per-unit cost by approximately $0.15. Draft angle on cover interior should be increased from 0.5° to 1.5° to aid ejection.",
+    "source": "Vendor C DFM Review"
+  },
+  {
+    "docId": "DOC-009",
+    "title": "Signal Conditioning Module Calibration Specification",
+    "docType": "spec",
+    "content": "All 4–20 mA channels shall be calibrated at 4 mA, 12 mA, and 20 mA reference points. Zero offset error ≤0.1% FSR. Span error ≤0.2% FSR. Calibration interval 24 months under normal operating conditions. Temperature coefficient of offset: ≤50 ppm/°C from –20 °C to +70 °C.",
+    "source": "Internal Spec Rev 4"
+  },
+  {
+    "docId": "DOC-010",
+    "title": "RFQ – Antenna Mount Bracket Fabrication",
+    "docType": "rfq",
+    "content": "Quotation requested for CNC machining of ASM-010 antenna mount bracket from 6061-T6 aluminium billet. Surface finish Ra 1.6 µm on mating faces. Anodise to MIL-A-8625 Type II, clear. Annual volume estimate 1,000 units. Initial order 150 units, 6-week lead time required.",
+    "source": "Procurement RFQ-2025-063"
+  },
+  {
+    "docId": "DOC-011",
+    "title": "ECO-2025-089: Main Controller Board RTC Crystal Change",
+    "docType": "eco",
+    "content": "Replacing 32.768 kHz crystal Y1 with lower-ESR variant to resolve RTC startup failures at –30 °C. New part number: STD-042 (Epson FC-135R 32.768 kHz, ±20 ppm). Load capacitance adjusted from 12.5 pF to 7 pF by modifying C47 and C48 to 3.3 pF. PCB respun as Rev 3.1.",
+    "source": "ECO Board Approval 2025-06-10"
+  },
+  {
+    "docId": "DOC-012",
+    "title": "Cooling System Assembly Thermal Analysis",
+    "docType": "tolerance-report",
+    "content": "Thermal simulation of ASM-007 using boundary conditions: ambient 50 °C, 92 mm fan at 1,800 RPM. Junction temperature of IGBT module predicted at 112 °C against 150 °C maximum rating, giving 38 °C margin. Thermal interface material compressed to 0.15 mm at 30 psi contact pressure.",
+    "source": "Internal Thermal Analysis Rev 2"
+  },
+  {
+    "docId": "DOC-013",
+    "title": "Front Control Panel Membrane Keypad Specification",
+    "docType": "spec",
+    "content": "Keypad actuation force: 250 ±50 gf. Travel: 0.4 mm. Minimum operational life: 1,000,000 cycles per key. Overlay material: 0.125 mm polyester with UV-stable inks. Rear adhesive: 3M 467MP, peel strength ≥2.5 N/mm. Operating temperature: –20 °C to +60 °C.",
+    "source": "Internal Spec Rev 1"
+  },
+  {
+    "docId": "DOC-014",
+    "title": "Vendor Feedback – Powder Coat Adhesion on Motor Drive Enclosure",
+    "docType": "vendor-feedback",
+    "content": "Powder coat vendor flags insufficient surface preparation specification on DOC-003 drawing. Current spec calls for alkaline wash only; vendor recommends adding iron phosphate conversion coating step to achieve Class A adhesion per ASTM D3359. Cost impact approximately $0.80 per enclosure.",
+    "source": "Vendor D Coating Feedback 2025-10-03"
+  },
+  {
+    "docId": "DOC-015",
+    "title": "Tolerance Stack-Up: Sensor Module PCB to Enclosure",
+    "docType": "tolerance-report",
+    "content": "Six-part stack-up analysis for PCB standoff height and enclosure internal depth in ASM-003. Nominal air gap 3.0 mm, worst-case minimum 1.2 mm, worst-case maximum 4.8 mm. All cases within the 1.0 mm–5.0 mm design requirement. Statistical (RSS) analysis gives ±0.9 mm at 3σ.",
+    "source": "Internal Tolerance Analysis Rev 2"
+  },
+  {
+    "docId": "DOC-016",
+    "title": "RFQ – Signal Conditioning Module PCB Assembly",
+    "docType": "rfq",
+    "content": "Request for quotation for PCB assembly of ASM-009 signal conditioning board, IPC Class 2. BOM includes 0402 passives, QFN-28 isolated DC-DC converter, and through-hole terminal blocks. Quote to include bare board procurement, SMT placement, wave solder, and AOI. Target price <$28/unit at 500 pieces.",
+    "source": "Procurement RFQ-2025-071"
+  },
+  {
+    "docId": "DOC-017",
+    "title": "ECO-2025-134: Battery Compartment Spring Contact Material Change",
+    "docType": "eco",
+    "content": "Spring contacts changed from phosphor bronze to beryllium copper to reduce contact resistance from 25 mΩ to 8 mΩ and improve fatigue life. Plating unchanged: 2.5 µm gold over 2.5 µm nickel. Supplier qualification required for BeCu contacts; two vendors approved: VND-003 and VND-005.",
+    "source": "ECO Board Approval 2025-11-20"
+  },
+  {
+    "docId": "DOC-018",
+    "title": "DFM Note – RF Shield Lid Retention Clip",
+    "docType": "dfm-note",
+    "content": "Current lid design uses four formed clips requiring secondary press operation after plating. Vendor A recommends redesigning to integral spring fingers stamped from the lid body, eliminating the secondary operation and reducing assembly time by 45 seconds per unit. Tooling credit of $600 offered.",
+    "source": "Vendor A DFM Review"
+  },
+  {
+    "docId": "DOC-019",
+    "title": "Connector Interface Board ESD Specification",
+    "docType": "spec",
+    "content": "All external signal lines on ASM-012 shall withstand ±15 kV contact discharge per IEC 61000-4-2 Level 4. TVS diode clamp voltage not to exceed 24 V at 1 A. Response time ≤1 ps. ESD protection components to be qualified to –40 °C to +85 °C storage range.",
+    "source": "Internal Spec Rev 2"
+  },
+  {
+    "docId": "DOC-020",
+    "title": "Vendor Feedback – Aluminium Extrusion Lead Time",
+    "docType": "vendor-feedback",
+    "content": "Vendor B advises 14-week lead time for new aluminium extrusion die for ASM-007 heat sink profile due to die shop backlog. Standard stock extrusion 6063-T5 available in 4 weeks but does not meet the 250 W/m·K conductivity requirement. Recommend proceeding with custom extrusion and ordering safety stock of 200 units.",
+    "source": "Vendor B Supply Feedback 2025-08-14"
+  },
+  {
+    "docId": "DOC-021",
+    "title": "ECO-2025-099: Front Panel Display Upgrade",
+    "docType": "eco",
+    "content": "Replacing 2.4-inch TFT with IPS panel variant to improve viewing angle from ±45° to ±80° in response to field feedback. Backlight driver circuit unchanged. New display part number BRK-028 (replaces BRK-027). Updated firmware required: display init sequence change in display_driver.c line 142.",
+    "source": "ECO Board Approval 2025-07-05"
+  },
+  {
+    "docId": "DOC-022",
+    "title": "Material Specification – Enclosure Gasket",
+    "docType": "spec",
+    "content": "Gasket material shall be closed-cell silicone foam per MIL-C-6183, hardness 20–30 Shore A. Compression set ≤15% after 168 hours at 70 °C per ASTM D395 Method B. Adhesive backing 3M 9448A. Operating temperature range –55 °C to +125 °C. Thickness 3.0 mm ±0.3 mm, compressed to 2.0 mm at assembly.",
+    "source": "Internal Spec Rev 1"
+  },
+  {
+    "docId": "DOC-023",
+    "title": "Tolerance Report – Cooling Fan Mounting Clearance",
+    "docType": "tolerance-report",
+    "content": "Three-part stack-up for fan blade tip clearance to heat sink fin array in ASM-007. Nominal clearance 4.0 mm, worst-case minimum 2.1 mm, which exceeds the 1.5 mm minimum required for airflow efficiency. Fan mounting slot tolerances revised to ±0.3 mm from ±0.5 mm to reduce variability.",
+    "source": "Internal Tolerance Analysis Rev 1"
+  },
+  {
+    "docId": "DOC-024",
+    "title": "DFM Note – Motor Drive Enclosure Cable Gland Entry",
+    "docType": "dfm-note",
+    "content": "Punched cable entry holes in ASM-008 bottom panel should be relocated 15 mm inward to maintain minimum 20 mm edge distance for M20 gland locknuts. Current layout creates risk of panel deformation during gland tightening. Revised panel layout drawing issued as DWG-008-B.",
+    "source": "Vendor A DFM Review"
+  },
+  {
+    "docId": "DOC-025",
+    "title": "RFQ – Sensor Module Housing Injection Moulding",
+    "docType": "rfq",
+    "content": "RFQ for injection moulding of ASM-003 sensor housing body and cover in glass-filled nylon PA66-GF30. Cavity steel P20 with texture VDI 30 on exterior surfaces. Annual volume 2,000 units. Prototype tooling (single cavity) required in 10 weeks, production tooling (4-cavity) in 18 weeks. Include DFM review in quotation.",
+    "source": "Procurement RFQ-2025-081"
+  }
+]

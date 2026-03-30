@@ -1,0 +1,110 @@
+[
+  {
+    "constraintId": "CON-001",
+    "type": "tolerance",
+    "value": "±0.3 mm",
+    "description": "Maximum positional tolerance for sheet metal punched holes relative to datum A. Applies to all enclosure panel hole patterns fabricated by CNC punch press per ASME Y14.5-2018."
+  },
+  {
+    "constraintId": "CON-002",
+    "type": "tolerance",
+    "value": "±0.1 mm",
+    "description": "Maximum positional tolerance for CNC-machined features on aluminium heat sink base. Required to ensure uniform contact pressure across IGBT module footprint."
+  },
+  {
+    "constraintId": "CON-003",
+    "type": "tolerance",
+    "value": "Ra ≤ 1.6 µm",
+    "description": "Maximum surface roughness for mating faces on aluminium antenna mount bracket. Required to achieve consistent bolt preload and prevent fretting under vibration."
+  },
+  {
+    "constraintId": "CON-004",
+    "type": "material",
+    "value": "PA66-GF30 (30% glass-filled nylon 66)",
+    "description": "Required material for sensor module housing body and cover. Specified for UL94 V-0 flammability, resistance to industrial oils, and dimensional stability at operating temperatures up to 100°C."
+  },
+  {
+    "constraintId": "CON-005",
+    "type": "material",
+    "value": "6061-T6 aluminium alloy",
+    "description": "Preferred aluminium alloy for CNC-machined structural brackets and heat sinks. Provides a balance of machinability, strength (UTS 310 MPa), and anodising compatibility."
+  },
+  {
+    "constraintId": "CON-006",
+    "type": "material",
+    "value": "G90 galvanised steel, 1.5 mm minimum",
+    "description": "Required material and minimum gauge for all sheet metal enclosure structural panels. G90 zinc coating provides corrosion protection for indoor industrial environments per ASTM A653."
+  },
+  {
+    "constraintId": "CON-007",
+    "type": "material",
+    "value": "RoHS 3 compliant (EU 2015/863)",
+    "description": "All materials and surface finishes must comply with RoHS 3 directive. No lead, mercury, cadmium, hexavalent chromium, PBB, PBDE, DEHP, BBP, DBP, or DIBP above threshold concentrations."
+  },
+  {
+    "constraintId": "CON-008",
+    "type": "process",
+    "value": "IPC Class 2 minimum",
+    "description": "All PCB assemblies must meet IPC-A-610 Class 2 acceptance criteria as a minimum. Class 3 applies to safety-critical boards identified in the design specification. AOI required on all production boards."
+  },
+  {
+    "constraintId": "CON-009",
+    "type": "process",
+    "value": "Minimum bend radius: 1×t for 5052-H32, 2×t for 6061-T6",
+    "description": "Minimum inside bend radii for sheet metal parts to prevent cracking. Applied per material type and measured at the inside of the bend. Bend direction should be perpendicular to rolling direction where possible."
+  },
+  {
+    "constraintId": "CON-010",
+    "type": "process",
+    "value": "Minimum thread engagement: 1.5×D in steel, 2.0×D in aluminium",
+    "description": "Minimum thread engagement depth for all tapped holes expressed as a multiple of the nominal thread diameter. Ensures full thread strength before fastener pull-out. Applies to metric ISO threads M2 through M12."
+  },
+  {
+    "constraintId": "CON-011",
+    "type": "cost",
+    "value": "≤ $35 USD per unit (PCB assembly, 500-piece volume)",
+    "description": "Target unit cost ceiling for signal conditioning module PCB assembly at 500-piece annual volume. Includes bare board, components, SMT placement, wave solder, AOI, and conformal coat. Excludes test fixture amortisation."
+  },
+  {
+    "constraintId": "CON-012",
+    "type": "cost",
+    "value": "NRE ≤ $5,000 USD per enclosure design",
+    "description": "Maximum allowable non-recurring engineering expense for sheet metal enclosure tooling per product. Includes die, punch, and forming tool development. Custom extrusion die costs evaluated separately."
+  },
+  {
+    "constraintId": "CON-013",
+    "type": "thermal",
+    "value": "Tj ≤ 0.8 × Tj_rated for all power semiconductors",
+    "description": "All power semiconductor junction temperatures must not exceed 80% of the manufacturer's rated maximum Tj under worst-case operating conditions (maximum load, maximum ambient temperature). Applied as a derating rule for reliability."
+  },
+  {
+    "constraintId": "CON-014",
+    "type": "thermal",
+    "value": "Ambient temperature range: –20°C to +55°C operating, –40°C to +85°C storage",
+    "description": "All assemblies must be designed to operate without degradation across the specified ambient range. Storage temperature range applies to packaged, unpowered assemblies. Validated by IEC 60068-2-1 and IEC 60068-2-2 testing."
+  },
+  {
+    "constraintId": "CON-015",
+    "type": "thermal",
+    "value": "Thermal interface material: ≥ 3.0 W/m·K, BLT ≤ 0.15 mm",
+    "description": "Thermal interface materials between power components and heat sinks must provide minimum 3.0 W/m·K bulk conductivity and achieve a bond-line thickness of 0.15 mm or less at the specified mounting torque to meet thermal budget."
+  },
+  {
+    "constraintId": "CON-016",
+    "type": "weight",
+    "value": "≤ 2.5 kg total assembly weight (excluding cable harness)",
+    "description": "Maximum allowable weight for the motor drive enclosure assembly (ASM-008) including all internal components, DIN rail, and hardware. Driven by panel mounting load rating and transport handling requirements."
+  },
+  {
+    "constraintId": "CON-017",
+    "type": "weight",
+    "value": "PCB bracket mass ≤ 150 g per bracket",
+    "description": "Maximum mass per individual PCB mounting bracket to limit vibration-induced inertial loads on PCB mounting holes. Exceeding this limit requires FEA analysis to verify solder joint and mounting hole integrity under specified vibration profile."
+  },
+  {
+    "constraintId": "CON-018",
+    "type": "process",
+    "value": "IP67 rated enclosures: O-ring groove per AS568, Ra ≤ 1.6 µm groove surface",
+    "description": "All IP67-rated enclosure O-ring grooves must be dimensioned per the applicable AS568 standard for the selected O-ring cross-section. Groove surface finish Ra ≤ 1.6 µm to prevent O-ring abrasion and micro-leakage paths. Corner radius minimum 0.25 mm."
+  }
+]

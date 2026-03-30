@@ -1,0 +1,86 @@
+[
+  {
+    "assemblyId": "ASM-001",
+    "name": "Power Supply Unit Assembly",
+    "version": "2.1",
+    "status": "released",
+    "description": "Main 24V DC power supply assembly providing regulated power to all subsystems. Includes EMI filtering, over-voltage protection, and thermal management components."
+  },
+  {
+    "assemblyId": "ASM-002",
+    "name": "Main Controller Board Assembly",
+    "version": "3.0",
+    "status": "released",
+    "description": "Central logic controller housing the primary MCU, CAN bus interface, and digital I/O expansion headers. Designed for DIN rail mounting in industrial enclosures."
+  },
+  {
+    "assemblyId": "ASM-003",
+    "name": "Sensor Module Housing",
+    "version": "1.2",
+    "status": "released",
+    "description": "IP67-rated enclosure assembly for field-mounted sensor electronics. Includes gland entries, internal PCB mounting bracket, and conduit knockout provisions."
+  },
+  {
+    "assemblyId": "ASM-004",
+    "name": "RF Shield Assembly",
+    "version": "1.0",
+    "status": "review",
+    "description": "Multi-piece RF shielding assembly for the receiver front-end section. Fabricated from 0.5 mm cold-rolled steel with tin plating for solderability and corrosion resistance."
+  },
+  {
+    "assemblyId": "ASM-005",
+    "name": "Battery Compartment Assembly",
+    "version": "1.1",
+    "status": "released",
+    "description": "Sealed battery compartment supporting 4x AA cells in series-parallel configuration. Features spring-loaded contacts, polarity protection PCB, and a captive cover with O-ring seal."
+  },
+  {
+    "assemblyId": "ASM-006",
+    "name": "Front Control Panel",
+    "version": "2.0",
+    "status": "released",
+    "description": "Operator interface panel assembly integrating membrane keypad, LED status indicators, and a 2.4-inch TFT display. Designed for flush mounting in a 2 mm aluminium front plate."
+  },
+  {
+    "assemblyId": "ASM-007",
+    "name": "Cooling System Assembly",
+    "version": "1.3",
+    "status": "review",
+    "description": "Active cooling assembly consisting of a 92 mm PWM fan, aluminium heat sink, and thermal interface pad. Configured for forced-air cooling of the motor drive power stage."
+  },
+  {
+    "assemblyId": "ASM-008",
+    "name": "Motor Drive Enclosure",
+    "version": "1.0",
+    "status": "draft",
+    "description": "Sheet metal enclosure for the 3-phase motor drive electronics, rated IP54. Includes DIN rail provisions, cable management channels, and removable top cover for service access."
+  },
+  {
+    "assemblyId": "ASM-009",
+    "name": "Signal Conditioning Module",
+    "version": "2.2",
+    "status": "released",
+    "description": "Analog signal conditioning assembly accepting 4–20 mA and 0–10 V field inputs. Provides galvanic isolation, scaling, and filtering prior to ADC sampling."
+  },
+  {
+    "assemblyId": "ASM-010",
+    "name": "Antenna Mount Assembly",
+    "version": "1.0",
+    "status": "draft",
+    "description": "Adjustable antenna mounting bracket assembly for external panel installation. Supports antenna rotation up to 360° and tilt ±45°, fabricated from 3 mm 6061-T6 aluminium."
+  },
+  {
+    "assemblyId": "ASM-011",
+    "name": "LED Display Module",
+    "version": "1.4",
+    "status": "deprecated",
+    "description": "Legacy 7-segment LED display module superseded by ASM-006. Retained for spare parts supply to existing installed base. No new design-ins permitted."
+  },
+  {
+    "assemblyId": "ASM-012",
+    "name": "Connector Interface Board",
+    "version": "2.3",
+    "status": "released",
+    "description": "I/O interface board providing field-wiring terminal blocks, D-sub breakouts, and ESD protection for all external signal connections entering the main enclosure."
+  }
+]

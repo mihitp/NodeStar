@@ -1,0 +1,81 @@
+[
+  {
+    "engineerId": "ENG-001",
+    "name": "Priya Nair",
+    "role": "senior-me",
+    "expertise": [
+      "sheet metal design",
+      "thermal management",
+      "DFM review",
+      "GD&T",
+      "tolerance analysis",
+      "enclosure IP ratings",
+      "ASME Y14.5"
+    ]
+  },
+  {
+    "engineerId": "ENG-002",
+    "name": "Marcus Webb",
+    "role": "junior-me",
+    "expertise": [
+      "PCB mounting design",
+      "fastener selection",
+      "SolidWorks CAD",
+      "BOM management",
+      "drawing release"
+    ]
+  },
+  {
+    "engineerId": "ENG-003",
+    "name": "Song Li",
+    "role": "cad-designer",
+    "expertise": [
+      "SolidWorks modelling",
+      "2D detailing",
+      "STEP export",
+      "drawing standards",
+      "sheet metal flat patterns",
+      "injection mould design"
+    ]
+  },
+  {
+    "engineerId": "ENG-004",
+    "name": "Aiden Kowalski",
+    "role": "manufacturing-eng",
+    "expertise": [
+      "SMT process engineering",
+      "conformal coating",
+      "first article inspection",
+      "IPC-A-610",
+      "IPC-7711",
+      "wave soldering",
+      "AQL sampling"
+    ]
+  },
+  {
+    "engineerId": "ENG-005",
+    "name": "Fatima Al-Rashid",
+    "role": "student",
+    "expertise": [
+      "CAD modelling (Fusion 360)",
+      "FEA simulation (basic)",
+      "BOM data entry",
+      "technical documentation",
+      "material properties research"
+    ]
+  },
+  {
+    "engineerId": "ENG-006",
+    "name": "Tom Eriksen",
+    "role": "senior-me",
+    "expertise": [
+      "RF shielding",
+      "EMC compliance",
+      "antenna design",
+      "signal integrity",
+      "MIL-STD testing",
+      "connector selection",
+      "IEC 61000-4 series"
+    ]
+  }
+]
