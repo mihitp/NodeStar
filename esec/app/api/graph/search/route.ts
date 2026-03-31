@@ -71,11 +71,11 @@ export async function POST(request: NextRequest) {
         delete part.embedding;
         part.weight = toNumber(part.weight);
         part.costEstimate = toNumber(part.costEstimate);
-        return { ...part, _score: score };
+        return { ...part, _score: score } as Record<string, unknown>;
       });
 
       // Find related QACs for the top parts
-      const partIds = parts.map((p) => p.partId);
+      const partIds = parts.map((p) => p.partId as string);
       const qacResult = await session.run(
         `MATCH (q:QAC)-[:ABOUT]->(p:Part)
          WHERE p.partId IN $partIds
