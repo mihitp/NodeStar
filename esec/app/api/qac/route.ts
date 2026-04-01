@@ -1,11 +1,16 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processQuestion } from '@/lib/qac-engine';
+import { loadSkillById } from '@/lib/skills';
 import { getDriver } from '@/lib/neo4j';
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { question, engineerId } = body as { question: unknown; engineerId?: string };
+    const { question, engineerId, skillId } = body as {
+      question: unknown;
+      engineerId?: string;
+      skillId?: string;
+    };
 
     if (!question || typeof question !== 'string' || question.trim() === '') {
       return NextResponse.json(
@@ -14,7 +19,10 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    const result = await processQuestion(question);
+    // Load skill context if a skillId was provided
+    const skillContext = skillId ? (loadSkillById(skillId)?.contextMarkdown ?? undefined) : undefined;
+
+    const result = await processQuestion(question, skillContext);
 
     if (engineerId) {
       const session = getDriver().session();

@@ -222,7 +222,7 @@ async function writeQACNode(
 
 // ─── Main Orchestrator ────────────────────────────────────────────────────────
 
-export async function processQuestion(question: string): Promise<QACResult> {
+export async function processQuestion(question: string, skillContext?: string): Promise<QACResult> {
   // Step 1: Generate embedding for the question
   const queryEmbedding = await generateEmbedding(question);
 
@@ -243,8 +243,8 @@ export async function processQuestion(question: string): Promise<QACResult> {
   // Step 3: Build slim context within token budget
   const context: GraphContext = buildContext(rankedParts, rankedQACs, rawDocs, rawConstraints);
 
-  // Step 4: Call LLM with question and slim context
-  const llmResponse = await generateQACResponse(question, context);
+  // Step 4: Call LLM with question, slim context, and optional skill context
+  const llmResponse = await generateQACResponse(question, context, skillContext);
 
   // Step 5: Generate QAC ID
   const qacId = `QAC-${Date.now()}`;
