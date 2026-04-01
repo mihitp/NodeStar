@@ -6,12 +6,19 @@ import PartCard from './PartCard';
 
 // ─── Types ────────────────────────────────────────────────────────────────────
 
-interface Skill {
-  id: string;
+interface Workflow {
+  workflowId: string;
   name: string;
   description: string;
-  icon: string;
-  tags: string[];
+  stepCount: number;
+  category: string;
+}
+
+interface WorkflowStep {
+  stepId: string;
+  order: number;
+  action: string;
+  description: string;
 }
 
 interface ReferencedPart {
@@ -37,8 +44,9 @@ interface SimilarQAC {
 }
 
 interface AssistantMetadata {
-  skillId?: string;
-  skillName?: string;
+  workflowId?: string;
+  workflowName?: string;
+  workflowSteps?: WorkflowStep[];
   referencedParts?: ReferencedPart[];
   relatedDocs?: RelatedDoc[];
   suggestedActions?: string[];
@@ -62,44 +70,18 @@ const EXAMPLE_QUESTIONS = [
 
 const PART_ID_REGEX = /\b([A-Z]{2,6}-\d{3,6})\b/g;
 
-// ─── Skill Icon ───────────────────────────────────────────────────────────────
-
-function SkillIcon({ icon, size = 16 }: { icon: string; size?: number }) {
-  const s = size;
-  switch (icon) {
-    case 'circuit':
-      return (
-        <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <rect x="2" y="7" width="20" height="10" rx="2" />
-          <line x1="6" y1="7" x2="6" y2="17" />
-          <line x1="10" y1="7" x2="10" y2="17" />
-          <line x1="14" y1="7" x2="14" y2="17" />
-          <line x1="18" y1="7" x2="18" y2="17" />
-        </svg>
-      );
-    case 'thermal':
-      return (
-        <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <path d="M14 14.76V3.5a2.5 2.5 0 0 0-5 0v11.26a4.5 4.5 0 1 0 5 0z" />
-        </svg>
-      );
-    case 'bracket':
-      return (
-        <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <polyline points="8 3 4 3 4 21 8 21" />
-          <polyline points="16 3 20 3 20 21 16 21" />
-        </svg>
-      );
-    default:
-      return (
-        <svg width={s} height={s} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
-          <circle cx="12" cy="12" r="10" />
-          <path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3" />
-          <line x1="12" y1="17" x2="12.01" y2="17" />
-        </svg>
-      );
-  }
-}
+const CATEGORY_COLORS: Record<string, string> = {
+  assembly: '#3b82f6',
+  inspection: '#10b981',
+  maintenance: '#f59e0b',
+  repair: '#f97316',
+  testing: '#a855f7',
+  installation: '#00d4ff',
+  calibration: '#14b8a6',
+  disassembly: '#ef4444',
+  cleaning: '#6366f1',
+  diagnosis: '#f43f5e',
+};
 
 // ─── Part ID Linking ──────────────────────────────────────────────────────────
 
@@ -175,32 +157,96 @@ function GraphSourcesIndicator({ metadata }: { metadata: AssistantMetadata }) {
     parts.push(`${metadata.relatedDocs!.length} doc${metadata.relatedDocs!.length > 1 ? 's' : ''}`);
   if ((metadata.similarQACs?.length ?? 0) > 0)
     parts.push(`${metadata.similarQACs!.length} past QAC${metadata.similarQACs!.length > 1 ? 's' : ''}`);
-  if (parts.length === 0) return null;
+  if (parts.length === 0 && !metadata.workflowName) return null;
 
   return (
-    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg mb-2"
+    <div className="flex items-center gap-2 px-3 py-1.5 rounded-lg mb-2 flex-wrap"
       style={{ background: 'rgba(0, 212, 255, 0.04)', border: '1px solid rgba(0, 212, 255, 0.12)' }}>
       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="var(--accent-cyan)"
         strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" style={{ flexShrink: 0 }}>
         <circle cx="12" cy="5" r="2" /><circle cx="5" cy="19" r="2" /><circle cx="19" cy="19" r="2" />
         <line x1="12" y1="7" x2="5" y2="17" /><line x1="12" y1="7" x2="19" y2="17" />
       </svg>
-      {metadata.skillName && (
+      {metadata.workflowName && metadata.workflowId && (
+        <>
+          <Link
+            href={`/explore?nodeId=${encodeURIComponent(metadata.workflowId)}&nodeLabel=Workflow`}
+            className="text-[10px] tracking-wider uppercase hover:underline"
+            style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-display), sans-serif' }}
+          >
+            /{metadata.workflowName} →
+          </Link>
+          {parts.length > 0 && <span style={{ color: 'var(--border-subtle)' }}>·</span>}
+        </>
+      )}
+      {parts.length > 0 && (
         <>
           <span className="text-[10px] tracking-wider uppercase"
             style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-display), sans-serif' }}>
-            /{metadata.skillName}
+            Graph:
           </span>
-          <span style={{ color: 'var(--border-subtle)' }}>·</span>
+          <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>
+            {parts.join(' · ')}
+          </span>
         </>
       )}
-      <span className="text-[10px] tracking-wider uppercase"
-        style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-display), sans-serif' }}>
-        Graph:
-      </span>
-      <span className="text-[10px]" style={{ color: 'var(--text-secondary)' }}>
-        {parts.join(' · ')}
-      </span>
+    </div>
+  );
+}
+
+function WorkflowStepsPanel({ workflowId, workflowName, steps }: {
+  workflowId: string;
+  workflowName: string;
+  steps: WorkflowStep[];
+}) {
+  return (
+    <div className="px-4 py-3 rounded-xl"
+      style={{ background: 'var(--bg-surface)', border: '1px solid rgba(0,212,255,0.15)' }}>
+      <div className="flex items-center justify-between mb-3">
+        <p className="text-[10px] font-semibold tracking-widest uppercase"
+          style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-display), sans-serif' }}>
+          Workflow Steps Used
+        </p>
+        <Link
+          href={`/explore?nodeId=${encodeURIComponent(workflowId)}&nodeLabel=Workflow`}
+          className="text-[10px] hover:underline transition-colors"
+          style={{ color: 'var(--accent-cyan)' }}
+        >
+          View {workflowName} in Graph →
+        </Link>
+      </div>
+      <ol className="space-y-0">
+        {steps.map((step, index) => (
+          <li key={step.stepId} className="flex gap-3">
+            <div className="flex flex-col items-center">
+              <div
+                className="flex-shrink-0 w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold z-10"
+                style={{
+                  border: '1.5px solid var(--accent-cyan)',
+                  color: 'var(--accent-cyan)',
+                  background: 'rgba(0,212,255,0.08)',
+                }}
+              >
+                {step.order}
+              </div>
+              {index < steps.length - 1 && (
+                <div className="w-px flex-1 my-1"
+                  style={{ borderLeft: '1px solid rgba(0,212,255,0.2)', minHeight: '1rem' }} />
+              )}
+            </div>
+            <div className={`pb-3 ${index === steps.length - 1 ? 'pb-0' : ''}`}>
+              <span className="text-xs font-semibold block" style={{ color: 'var(--text-primary)' }}>
+                {step.action}
+              </span>
+              {step.description && (
+                <p className="text-[11px] mt-0.5" style={{ color: 'var(--text-muted)' }}>
+                  {step.description}
+                </p>
+              )}
+            </div>
+          </li>
+        ))}
+      </ol>
     </div>
   );
 }
@@ -246,6 +292,15 @@ function AssistantMessage({ content, metadata }: { content: string; metadata?: A
               ))}
             </ol>
           </div>
+        )}
+
+        {/* Workflow steps panel (secondary: links to graph) */}
+        {metadata?.workflowId && metadata.workflowName && metadata.workflowSteps && metadata.workflowSteps.length > 0 && (
+          <WorkflowStepsPanel
+            workflowId={metadata.workflowId}
+            workflowName={metadata.workflowName}
+            steps={metadata.workflowSteps}
+          />
         )}
 
         {metadata?.referencedParts && metadata.referencedParts.length > 0 && (
@@ -340,30 +395,30 @@ function LoadingBubble() {
   );
 }
 
-// ─── Slash Command Picker ─────────────────────────────────────────────────────
+// ─── Workflow Slash Picker ────────────────────────────────────────────────────
 
 function SlashPicker({
-  skills,
+  workflows,
   query,
   activeIndex,
   onSelect,
 }: {
-  skills: Skill[];
+  workflows: Workflow[];
   query: string;
   activeIndex: number;
-  onSelect: (skill: Skill) => void;
+  onSelect: (w: Workflow) => void;
 }) {
   const filtered = useMemo(
     () =>
       query
-        ? skills.filter(
-            (s) =>
-              s.id.includes(query.toLowerCase()) ||
-              s.name.toLowerCase().includes(query.toLowerCase()) ||
-              s.tags.some((t) => t.includes(query.toLowerCase()))
+        ? workflows.filter(
+            (w) =>
+              w.workflowId.toLowerCase().includes(query.toLowerCase()) ||
+              w.name.toLowerCase().includes(query.toLowerCase()) ||
+              w.category?.toLowerCase().includes(query.toLowerCase())
           )
-        : skills,
-    [skills, query]
+        : workflows,
+    [workflows, query]
   );
 
   if (filtered.length === 0) return null;
@@ -377,41 +432,54 @@ function SlashPicker({
         boxShadow: '0 0 20px rgba(0,212,255,0.15), 0 8px 32px rgba(0,0,0,0.4)',
       }}
     >
-      <div className="px-3 py-2 border-b" style={{ borderColor: 'var(--border-subtle)' }}>
+      <div className="px-3 py-2 border-b flex items-center justify-between"
+        style={{ borderColor: 'var(--border-subtle)' }}>
         <span className="text-[10px] tracking-widest uppercase"
           style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-display), sans-serif' }}>
-          Skills
+          Workflows
+        </span>
+        <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+          {filtered.length} available
         </span>
       </div>
       <div className="overflow-y-auto max-h-56">
-        {filtered.map((skill, i) => (
-          <button
-            key={skill.id}
-            type="button"
-            onMouseDown={(e) => { e.preventDefault(); onSelect(skill); }}
-            className="w-full flex items-start gap-3 px-3 py-2.5 text-left transition-colors duration-100"
-            style={{
-              background: i === activeIndex ? 'rgba(0,212,255,0.08)' : 'transparent',
-              borderBottom: i < filtered.length - 1 ? '1px solid var(--border-subtle)' : 'none',
-            }}
-          >
-            <span style={{ color: 'var(--accent-cyan)', marginTop: 1, flexShrink: 0 }}>
-              <SkillIcon icon={skill.icon} size={15} />
-            </span>
-            <div className="min-w-0">
-              <div className="flex items-center gap-2">
-                <span className="text-xs font-semibold"
-                  style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display), sans-serif' }}>
-                  /{skill.id}
-                </span>
-                <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>{skill.name}</span>
+        {filtered.map((w, i) => {
+          const accentColor = CATEGORY_COLORS[w.category?.toLowerCase()] ?? '#94a3b8';
+          return (
+            <button
+              key={w.workflowId}
+              type="button"
+              onMouseDown={(e) => { e.preventDefault(); onSelect(w); }}
+              className="w-full flex items-start gap-3 px-3 py-2.5 text-left transition-colors duration-100"
+              style={{
+                background: i === activeIndex ? 'rgba(0,212,255,0.08)' : 'transparent',
+                borderBottom: i < filtered.length - 1 ? '1px solid var(--border-subtle)' : 'none',
+              }}
+            >
+              {/* Category dot */}
+              <div className="mt-1 w-2 h-2 rounded-full shrink-0"
+                style={{ background: accentColor, boxShadow: `0 0 6px ${accentColor}80` }} />
+              <div className="min-w-0 flex-1">
+                <div className="flex items-center gap-2 flex-wrap">
+                  <span className="text-xs font-semibold"
+                    style={{ color: 'var(--text-primary)', fontFamily: 'var(--font-display), sans-serif' }}>
+                    {w.name}
+                  </span>
+                  <span className="text-[10px] px-1.5 py-0.5 rounded"
+                    style={{ background: 'var(--bg-elevated)', color: accentColor, fontFamily: 'var(--font-mono), monospace' }}>
+                    {w.category}
+                  </span>
+                  <span className="text-[10px]" style={{ color: 'var(--text-muted)' }}>
+                    {w.stepCount} step{w.stepCount !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                <p className="text-[11px] mt-0.5 line-clamp-1" style={{ color: 'var(--text-secondary)' }}>
+                  {w.description}
+                </p>
               </div>
-              <p className="text-[11px] mt-0.5 line-clamp-1" style={{ color: 'var(--text-secondary)' }}>
-                {skill.description}
-              </p>
-            </div>
-          </button>
-        ))}
+            </button>
+          );
+        })}
       </div>
     </div>
   );
@@ -423,19 +491,18 @@ export default function QACChat() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [activeSkill, setActiveSkill] = useState<Skill | null>(null);
-  const [skills, setSkills] = useState<Skill[]>([]);
+  const [activeWorkflow, setActiveWorkflow] = useState<Workflow | null>(null);
+  const [workflows, setWorkflows] = useState<Workflow[]>([]);
   const [showPicker, setShowPicker] = useState(false);
   const [slashQuery, setSlashQuery] = useState('');
   const [pickerIndex, setPickerIndex] = useState(0);
   const bottomRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
 
-  // Load skills once on mount
   useEffect(() => {
-    fetch('/api/skills')
+    fetch('/api/workflows')
       .then((r) => r.json())
-      .then((d) => setSkills(d.skills ?? []))
+      .then((d) => setWorkflows(d.workflows ?? []))
       .catch(() => {});
   }, []);
 
@@ -443,17 +510,16 @@ export default function QACChat() {
     bottomRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages, loading]);
 
-  const selectSkill = (skill: Skill) => {
-    setActiveSkill(skill);
+  const selectWorkflow = (w: Workflow) => {
+    setActiveWorkflow(w);
     setShowPicker(false);
     setSlashQuery('');
-    // Strip the slash command prefix from input
     setInput((prev) => prev.replace(/^\/\S*\s?/, ''));
     textareaRef.current?.focus();
   };
 
-  const clearSkill = () => {
-    setActiveSkill(null);
+  const clearWorkflow = () => {
+    setActiveWorkflow(null);
     textareaRef.current?.focus();
   };
 
@@ -470,7 +536,7 @@ export default function QACChat() {
 
       if (textareaRef.current) textareaRef.current.style.height = 'auto';
 
-      const skillSnapshot = activeSkill;
+      const workflowSnapshot = activeWorkflow;
 
       try {
         const res = await fetch('/api/qac', {
@@ -478,7 +544,7 @@ export default function QACChat() {
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({
             question: text,
-            skillId: skillSnapshot?.id,
+            workflowId: workflowSnapshot?.workflowId,
           }),
         });
 
@@ -488,10 +554,11 @@ export default function QACChat() {
 
         const assistantMessage: Message = {
           role: 'assistant',
-          content: data.answer ?? data.content ?? 'No response received.',
+          content: data.answer ?? 'No response received.',
           metadata: {
-            skillId: skillSnapshot?.id,
-            skillName: skillSnapshot?.name,
+            workflowId: data.workflowId,
+            workflowName: data.workflowName,
+            workflowSteps: data.workflowSteps,
             referencedParts: data.referencedParts,
             relatedDocs: data.relatedDocs,
             suggestedActions: data.suggestedActions,
@@ -513,7 +580,7 @@ export default function QACChat() {
         setLoading(false);
       }
     },
-    [input, loading, activeSkill]
+    [input, loading, activeWorkflow]
   );
 
   const handleInput = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
@@ -522,7 +589,6 @@ export default function QACChat() {
     e.target.style.height = 'auto';
     e.target.style.height = `${Math.min(e.target.scrollHeight, 160)}px`;
 
-    // Slash command detection
     const slashMatch = val.match(/^\/(\S*)$/);
     if (slashMatch) {
       setSlashQuery(slashMatch[1]);
@@ -533,45 +599,31 @@ export default function QACChat() {
     }
   };
 
-  const filteredSkills = useMemo(
+  const filteredWorkflows = useMemo(
     () =>
       slashQuery
-        ? skills.filter(
-            (s) =>
-              s.id.includes(slashQuery.toLowerCase()) ||
-              s.name.toLowerCase().includes(slashQuery.toLowerCase())
+        ? workflows.filter(
+            (w) =>
+              w.workflowId.toLowerCase().includes(slashQuery.toLowerCase()) ||
+              w.name.toLowerCase().includes(slashQuery.toLowerCase()) ||
+              w.category?.toLowerCase().includes(slashQuery.toLowerCase())
           )
-        : skills,
-    [skills, slashQuery]
+        : workflows,
+    [workflows, slashQuery]
   );
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLTextAreaElement>) => {
     if (showPicker) {
-      if (e.key === 'ArrowDown') {
-        e.preventDefault();
-        setPickerIndex((i) => Math.min(i + 1, filteredSkills.length - 1));
-        return;
-      }
-      if (e.key === 'ArrowUp') {
-        e.preventDefault();
-        setPickerIndex((i) => Math.max(i - 1, 0));
-        return;
-      }
+      if (e.key === 'ArrowDown') { e.preventDefault(); setPickerIndex((i) => Math.min(i + 1, filteredWorkflows.length - 1)); return; }
+      if (e.key === 'ArrowUp') { e.preventDefault(); setPickerIndex((i) => Math.max(i - 1, 0)); return; }
       if (e.key === 'Enter' || e.key === 'Tab') {
         e.preventDefault();
-        if (filteredSkills[pickerIndex]) selectSkill(filteredSkills[pickerIndex]);
+        if (filteredWorkflows[pickerIndex]) selectWorkflow(filteredWorkflows[pickerIndex]);
         return;
       }
-      if (e.key === 'Escape') {
-        e.preventDefault();
-        setShowPicker(false);
-        return;
-      }
+      if (e.key === 'Escape') { e.preventDefault(); setShowPicker(false); return; }
     }
-    if (e.key === 'Enter' && !e.shiftKey) {
-      e.preventDefault();
-      submit();
-    }
+    if (e.key === 'Enter' && !e.shiftKey) { e.preventDefault(); submit(); }
   };
 
   const handleExampleClick = (q: string) => {
@@ -596,10 +648,9 @@ export default function QACChat() {
               Ask a question about your parts
             </p>
             <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-              Every response is grounded in your Neo4j knowledge graph · type <span
-                style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono), monospace' }}>
-                /
-              </span> to use a skill
+              Every response is grounded in your Neo4j knowledge graph · type{' '}
+              <span style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono), monospace' }}>/</span>
+              {' '}to scope a workflow
             </p>
             <div className="mt-5 flex flex-col gap-2 items-center">
               {EXAMPLE_QUESTIONS.map((q) => (
@@ -610,25 +661,28 @@ export default function QACChat() {
                 </button>
               ))}
             </div>
-            {skills.length > 0 && (
+            {workflows.length > 0 && (
               <div className="mt-6">
                 <p className="text-[10px] tracking-widest uppercase mb-3"
                   style={{ color: 'var(--text-muted)', fontFamily: 'var(--font-display), sans-serif' }}>
-                  Available Skills
+                  Workflows
                 </p>
-                <div className="flex flex-wrap gap-2 justify-center max-w-sm">
-                  {skills.map((skill) => (
-                    <button key={skill.id} type="button"
-                      onClick={() => { setActiveSkill(skill); textareaRef.current?.focus(); }}
-                      className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs transition-all duration-150"
-                      style={{ color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)' }}
-                      onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'rgba(0,212,255,0.3)'; e.currentTarget.style.color = 'var(--accent-cyan)'; }}
-                      onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
-                    >
-                      <SkillIcon icon={skill.icon} size={12} />
-                      <span style={{ fontFamily: 'var(--font-mono), monospace' }}>/{skill.id}</span>
-                    </button>
-                  ))}
+                <div className="flex flex-wrap gap-2 justify-center max-w-md">
+                  {workflows.slice(0, 6).map((w) => {
+                    const accentColor = CATEGORY_COLORS[w.category?.toLowerCase()] ?? '#94a3b8';
+                    return (
+                      <button key={w.workflowId} type="button"
+                        onClick={() => { setActiveWorkflow(w); textareaRef.current?.focus(); }}
+                        className="flex items-center gap-1.5 px-3 py-1 rounded-lg text-xs transition-all duration-150"
+                        style={{ color: 'var(--text-secondary)', border: '1px solid var(--border-subtle)', background: 'var(--bg-elevated)' }}
+                        onMouseEnter={(e) => { e.currentTarget.style.borderColor = accentColor + '60'; e.currentTarget.style.color = accentColor; }}
+                        onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'var(--border-subtle)'; e.currentTarget.style.color = 'var(--text-secondary)'; }}
+                      >
+                        <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ background: accentColor }} />
+                        <span>{w.name}</span>
+                      </button>
+                    );
+                  })}
                 </div>
               </div>
             )}
@@ -651,16 +705,26 @@ export default function QACChat() {
       <div className="px-4 py-3"
         style={{ borderTop: '1px solid var(--border-subtle)', background: 'var(--bg-surface)' }}>
 
-        {/* Active skill badge */}
-        {activeSkill && (
+        {/* Active workflow badge */}
+        {activeWorkflow && (
           <div className="flex items-center gap-2 mb-2 px-1">
             <div className="flex items-center gap-1.5 px-2.5 py-1 rounded-lg text-xs"
               style={{ background: 'rgba(0,212,255,0.08)', border: '1px solid rgba(0,212,255,0.25)', color: 'var(--accent-cyan)' }}>
-              <SkillIcon icon={activeSkill.icon} size={12} />
-              <span style={{ fontFamily: 'var(--font-mono), monospace' }}>/{activeSkill.id}</span>
-              <span style={{ color: 'var(--text-muted)', marginLeft: 2 }}>{activeSkill.name}</span>
+              <div className="w-1.5 h-1.5 rounded-full"
+                style={{ background: CATEGORY_COLORS[activeWorkflow.category?.toLowerCase()] ?? '#94a3b8' }} />
+              <span style={{ fontFamily: 'var(--font-display), sans-serif' }}>{activeWorkflow.name}</span>
+              <span style={{ color: 'var(--text-muted)', fontSize: '0.7em' }}>
+                {activeWorkflow.stepCount} steps
+              </span>
             </div>
-            <button type="button" onClick={clearSkill}
+            <Link
+              href={`/explore?nodeId=${encodeURIComponent(activeWorkflow.workflowId)}&nodeLabel=Workflow`}
+              className="text-[10px] transition-colors hover:underline"
+              style={{ color: 'var(--text-muted)' }}
+            >
+              view in graph
+            </Link>
+            <button type="button" onClick={clearWorkflow}
               className="text-[10px] transition-colors duration-100"
               style={{ color: 'var(--text-muted)' }}
               onMouseEnter={(e) => { e.currentTarget.style.color = 'var(--accent-rose)'; }}
@@ -674,10 +738,10 @@ export default function QACChat() {
         <div className="relative">
           {showPicker && (
             <SlashPicker
-              skills={skills}
+              workflows={workflows}
               query={slashQuery}
               activeIndex={pickerIndex}
-              onSelect={selectSkill}
+              onSelect={selectWorkflow}
             />
           )}
 
@@ -689,7 +753,11 @@ export default function QACChat() {
               onChange={handleInput}
               onKeyDown={handleKeyDown}
               onBlur={() => setTimeout(() => setShowPicker(false), 100)}
-              placeholder={activeSkill ? `Ask ${activeSkill.name}...` : 'Ask about parts, compatibility, materials… or type / for skills'}
+              placeholder={
+                activeWorkflow
+                  ? `Ask about ${activeWorkflow.name}...`
+                  : 'Ask about parts, compatibility, materials… or type / to scope a workflow'
+              }
               rows={1}
               disabled={loading}
               className="flex-1 resize-none bg-transparent text-sm leading-relaxed min-h-[24px] max-h-40 focus:outline-none disabled:opacity-50"
@@ -712,7 +780,9 @@ export default function QACChat() {
           </div>
         </div>
         <p className="mt-1.5 text-[10px] text-center tracking-wide" style={{ color: 'var(--text-muted)' }}>
-          Enter to send · Shift+Enter for newline · <span style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono), monospace' }}>/</span> for skills
+          Enter to send · Shift+Enter for newline ·{' '}
+          <span style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono), monospace' }}>/</span>
+          {' '}to scope a workflow
         </p>
       </div>
     </div>

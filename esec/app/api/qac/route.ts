@@ -1,15 +1,68 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { processQuestion } from '@/lib/qac-engine';
-import { loadSkillById } from '@/lib/skills';
 import { getDriver } from '@/lib/neo4j';
+
+interface WorkflowStep {
+  stepId: string;
+  order: number;
+  action: string;
+  description: string;
+}
+
+async function fetchWorkflowContext(workflowId: string): Promise<{
+  name: string;
+  description: string;
+  steps: WorkflowStep[];
+} | null> {
+  const session = getDriver().session();
+  try {
+    const wResult = await session.run(
+      'MATCH (w:Workflow {workflowId: $id}) RETURN w',
+      { id: workflowId }
+    );
+    if (wResult.records.length === 0) return null;
+
+    const w = wResult.records[0].get('w').properties;
+
+    const sResult = await session.run(
+      'MATCH (w:Workflow {workflowId: $id})-[:CONTAINS]->(s:WorkflowStep) RETURN s ORDER BY s.order',
+      { id: workflowId }
+    );
+
+    const steps: WorkflowStep[] = sResult.records.map((r) => {
+      const s = r.get('s').properties;
+      return {
+        stepId: s.stepId,
+        order: typeof s.order?.toNumber === 'function' ? s.order.toNumber() : Number(s.order),
+        action: s.action,
+        description: s.description ?? '',
+      };
+    });
+
+    return { name: w.name, description: w.description ?? '', steps };
+  } finally {
+    await session.close();
+  }
+}
+
+function buildWorkflowContextMarkdown(name: string, description: string, steps: WorkflowStep[]): string {
+  const lines = [
+    `## Active Workflow: ${name}`,
+    description,
+    '',
+    'Steps:',
+    ...steps.map((s) => `${s.order}. **${s.action}**: ${s.description}`),
+  ];
+  return lines.join('\n');
+}
 
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { question, engineerId, skillId } = body as {
+    const { question, engineerId, workflowId } = body as {
       question: unknown;
       engineerId?: string;
-      skillId?: string;
+      workflowId?: string;
     };
 
     if (!question || typeof question !== 'string' || question.trim() === '') {
@@ -19,10 +72,17 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Load skill context if a skillId was provided
-    const skillContext = skillId ? (loadSkillById(skillId)?.contextMarkdown ?? undefined) : undefined;
+    // Load workflow context if workflowId was provided
+    let workflowContext: { name: string; description: string; steps: WorkflowStep[] } | null = null;
+    if (workflowId) {
+      workflowContext = await fetchWorkflowContext(workflowId);
+    }
 
-    const result = await processQuestion(question, skillContext);
+    const contextMarkdown = workflowContext
+      ? buildWorkflowContextMarkdown(workflowContext.name, workflowContext.description, workflowContext.steps)
+      : undefined;
+
+    const result = await processQuestion(question, contextMarkdown);
 
     if (engineerId) {
       const session = getDriver().session();
@@ -38,7 +98,14 @@ export async function POST(request: NextRequest) {
       }
     }
 
-    return NextResponse.json(result);
+    return NextResponse.json({
+      ...result,
+      ...(workflowContext && {
+        workflowId,
+        workflowName: workflowContext.name,
+        workflowSteps: workflowContext.steps,
+      }),
+    });
   } catch (error) {
     console.error('QAC POST error:', error);
     return NextResponse.json(
