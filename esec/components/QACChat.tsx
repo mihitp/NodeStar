@@ -648,9 +648,9 @@ export default function QACChat() {
               Ask a question about your parts
             </p>
             <p className="text-xs mt-1" style={{ color: 'var(--text-muted)' }}>
-              Every response is grounded in your Neo4j knowledge graph · type{' '}
+              {'Every response is grounded in your Neo4j knowledge graph · type '}
               <span style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono), monospace' }}>/</span>
-              {' '}to scope a workflow
+              {' to scope a workflow'}
             </p>
             <div className="mt-5 flex flex-col gap-2 items-center">
               {EXAMPLE_QUESTIONS.map((q) => (
@@ -780,9 +780,9 @@ export default function QACChat() {
           </div>
         </div>
         <p className="mt-1.5 text-[10px] text-center tracking-wide" style={{ color: 'var(--text-muted)' }}>
-          Enter to send · Shift+Enter for newline ·{' '}
+          {'Enter to send · Shift+Enter for newline · '}
           <span style={{ color: 'var(--accent-cyan)', fontFamily: 'var(--font-mono), monospace' }}>/</span>
-          {' '}to scope a workflow
+          {' to scope a workflow'}
         </p>
       </div>
     </div>
