@@ -1,65 +1,196 @@
-import Image from "next/image";
-
 export default function Home() {
+  const features = [
+    {
+      href: "/qac",
+      title: "QAC Console",
+      description:
+        "AI-powered engineering Q&A with graph context",
+      icon: (
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" />
+        </svg>
+      ),
+      stagger: "stagger-1",
+    },
+    {
+      href: "/explore",
+      title: "Graph Explorer",
+      description:
+        "Interactive visualization of your entire parts graph",
+      icon: (
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <circle cx="12" cy="5" r="2" />
+          <circle cx="5" cy="19" r="2" />
+          <circle cx="19" cy="19" r="2" />
+          <line x1="12" y1="7" x2="5" y2="17" />
+          <line x1="12" y1="7" x2="19" y2="17" />
+          <line x1="5" y1="19" x2="19" y2="19" />
+        </svg>
+      ),
+      stagger: "stagger-2",
+    },
+    {
+      href: "/workflows",
+      title: "Workflows",
+      description:
+        "Browse and execute engineering workflows",
+      icon: (
+        <svg
+          width="28"
+          height="28"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          strokeLinejoin="round"
+        >
+          <line x1="8" y1="6" x2="21" y2="6" />
+          <line x1="8" y1="12" x2="21" y2="12" />
+          <line x1="8" y1="18" x2="21" y2="18" />
+          <line x1="3" y1="6" x2="3.01" y2="6" />
+          <line x1="3" y1="12" x2="3.01" y2="12" />
+          <line x1="3" y1="18" x2="3.01" y2="18" />
+        </svg>
+      ),
+      stagger: "stagger-3",
+    },
+  ];
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the page.tsx file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
-        </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
+    <main
+      className="flex flex-col items-center justify-center flex-1 px-6 py-24"
+      style={{ minHeight: "calc(100vh - 53px)" }}
+    >
+      {/* Hero */}
+      <div className="text-center mb-16 animate-fade-in">
+        <h1
+          style={{
+            fontFamily: "var(--font-display), sans-serif",
+            fontSize: "clamp(3rem, 8vw, 6rem)",
+            fontWeight: 700,
+            color: "var(--accent-cyan)",
+            textShadow:
+              "0 0 40px rgba(0, 212, 255, 0.4), 0 0 80px rgba(0, 212, 255, 0.15)",
+            letterSpacing: "0.12em",
+            lineHeight: 1,
+            marginBottom: "0.5rem",
+          }}
+        >
+          ESEC
+        </h1>
+
+        <p
+          style={{
+            fontFamily: "var(--font-body), sans-serif",
+            fontSize: "1.125rem",
+            fontWeight: 500,
+            color: "var(--text-primary)",
+            letterSpacing: "0.15em",
+            textTransform: "uppercase",
+            marginBottom: "1.25rem",
+          }}
+        >
+          Engineering Knowledge Graph
+        </p>
+
+        <p
+          style={{
+            fontFamily: "var(--font-body), sans-serif",
+            fontSize: "1rem",
+            fontWeight: 300,
+            color: "var(--text-secondary)",
+            maxWidth: "520px",
+            lineHeight: 1.7,
+            margin: "0 auto",
+          }}
+        >
+          Your mission control for mechanical design intelligence. Query parts,
+          explore relationships, and manage workflows.
+        </p>
+      </div>
+
+      {/* Feature cards */}
+      <div
+        className="grid gap-5 w-full"
+        style={{
+          maxWidth: "900px",
+          gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))",
+        }}
+      >
+        {features.map((feature) => (
           <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
+            key={feature.href}
+            href={feature.href}
+            className={`glass-panel feature-card animate-fade-in ${feature.stagger}`}
+            style={{
+              display: "flex",
+              flexDirection: "column",
+              alignItems: "center",
+              textAlign: "center",
+              padding: "2rem 1.5rem",
+              textDecoration: "none",
+              cursor: "pointer",
+            }}
           >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={16}
-            />
-            Deploy Now
+            {/* Icon */}
+            <div
+              style={{
+                color: "var(--accent-cyan)",
+                marginBottom: "1rem",
+                filter: "drop-shadow(0 0 8px rgba(0, 212, 255, 0.5))",
+              }}
+            >
+              {feature.icon}
+            </div>
+
+            {/* Title */}
+            <h2
+              style={{
+                fontFamily: "var(--font-display), sans-serif",
+                fontSize: "1.125rem",
+                fontWeight: 600,
+                color: "var(--text-primary)",
+                letterSpacing: "0.05em",
+                marginBottom: "0.5rem",
+              }}
+            >
+              {feature.title}
+            </h2>
+
+            {/* Description */}
+            <p
+              style={{
+                fontFamily: "var(--font-body), sans-serif",
+                fontSize: "0.875rem",
+                fontWeight: 400,
+                color: "var(--text-secondary)",
+                lineHeight: 1.6,
+              }}
+            >
+              {feature.description}
+            </p>
           </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
-        </div>
-      </main>
-    </div>
+        ))}
+      </div>
+    </main>
   );
 }

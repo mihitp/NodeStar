@@ -20,68 +20,86 @@ async function seedEmbeddings() {
   const driver = neo4j.driver(uri, neo4j.auth.basic(username, password));
   const session = driver.session();
 
+  async function embedAndStore(
+    label: string,
+    idField: string,
+    records: Array<{ id: string; text: string }>,
+    cypher: string,
+  ) {
+    if (records.length === 0) { console.log(`  No ${label} nodes found, skipping.`); return; }
+    console.log(`Generating embeddings for ${records.length} ${label} nodes...`);
+    const response = await openai.embeddings.create({
+      model: 'text-embedding-3-small',
+      input: records.map((r) => r.text),
+    });
+    for (let i = 0; i < records.length; i++) {
+      const embedding = response.data[i].embedding;
+      await session.run(cypher, { id: records[i].id, embedding });
+    }
+    console.log(`  Stored embeddings for ${records.length} ${label} nodes`);
+  }
+
   try {
-    // Embed Part functionalDescriptions
-    console.log('Fetching Parts...');
+    // ── Parts ──────────────────────────────────────────────────────────────────
+    console.log('\nFetching Parts...');
     const partsResult = await session.run(
       'MATCH (p:Part) RETURN p.partId AS id, p.functionalDescription AS text'
     );
+    await embedAndStore(
+      'Part',
+      'partId',
+      partsResult.records.map((r) => ({ id: r.get('id') as string, text: r.get('text') as string })),
+      'MATCH (p:Part {partId: $id}) SET p.embedding = $embedding',
+    );
 
-    const partTexts = partsResult.records.map((r) => ({
-      id: r.get('id') as string,
-      text: r.get('text') as string,
-    }));
-
-    console.log(`Generating embeddings for ${partTexts.length} parts...`);
-    // Batch embed (OpenAI supports up to 2048 inputs)
-    const partEmbResponse = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: partTexts.map((p) => p.text),
-    });
-
-    for (let i = 0; i < partTexts.length; i++) {
-      const embedding = partEmbResponse.data[i].embedding;
-      await session.run(
-        'MATCH (p:Part {partId: $id}) SET p.embedding = $embedding',
-        { id: partTexts[i].id, embedding }
-      );
-    }
-    console.log(`  Stored embeddings for ${partTexts.length} parts`);
-
-    // Embed QAC questions
-    console.log('Fetching QACs...');
+    // ── QACs ───────────────────────────────────────────────────────────────────
+    console.log('\nFetching QACs...');
     const qacsResult = await session.run(
       'MATCH (q:QAC) RETURN q.qacId AS id, q.question AS text'
     );
+    await embedAndStore(
+      'QAC',
+      'qacId',
+      qacsResult.records.map((r) => ({ id: r.get('id') as string, text: r.get('text') as string })),
+      'MATCH (q:QAC {qacId: $id}) SET q.embedding = $embedding',
+    );
 
-    const qacTexts = qacsResult.records.map((r) => ({
-      id: r.get('id') as string,
-      text: r.get('text') as string,
-    }));
+    // ── DesignDocs ─────────────────────────────────────────────────────────────
+    console.log('\nFetching DesignDocs...');
+    const docsResult = await session.run(
+      'MATCH (d:DesignDoc) RETURN d.docId AS id, (d.title + " " + coalesce(d.content, "")) AS text'
+    );
+    await embedAndStore(
+      'DesignDoc',
+      'docId',
+      docsResult.records.map((r) => ({ id: r.get('id') as string, text: r.get('text') as string })),
+      'MATCH (d:DesignDoc {docId: $id}) SET d.embedding = $embedding',
+    );
 
-    console.log(`Generating embeddings for ${qacTexts.length} QACs...`);
-    const qacEmbResponse = await openai.embeddings.create({
-      model: 'text-embedding-3-small',
-      input: qacTexts.map((q) => q.text),
-    });
+    // ── Workflows (embed name + description + all step actions/descriptions) ───
+    console.log('\nFetching Workflows with steps...');
+    const workflowsResult = await session.run(
+      `MATCH (w:Workflow)
+       OPTIONAL MATCH (w)-[:CONTAINS]->(s:WorkflowStep)
+       WITH w, collect(coalesce(s.action, '') + ' ' + coalesce(s.description, '')) AS stepTexts
+       RETURN w.workflowId AS id,
+              (w.name + ' ' + coalesce(w.description, '') + ' ' + reduce(t = '', st IN stepTexts | t + ' ' + st)) AS text`
+    );
+    await embedAndStore(
+      'Workflow',
+      'workflowId',
+      workflowsResult.records.map((r) => ({ id: r.get('id') as string, text: (r.get('text') as string).trim() })),
+      'MATCH (w:Workflow {workflowId: $id}) SET w.embedding = $embedding',
+    );
 
-    for (let i = 0; i < qacTexts.length; i++) {
-      const embedding = qacEmbResponse.data[i].embedding;
-      await session.run(
-        'MATCH (q:QAC {qacId: $id}) SET q.embedding = $embedding',
-        { id: qacTexts[i].id, embedding }
+    // ── Verify ─────────────────────────────────────────────────────────────────
+    console.log('\n── Verification ──────────────────────────────────────');
+    for (const [label, field] of [['Part', 'partId'], ['QAC', 'qacId'], ['DesignDoc', 'docId'], ['Workflow', 'workflowId']]) {
+      const r = await session.run(
+        `MATCH (n:${label}) WHERE n.embedding IS NOT NULL RETURN count(n) AS c`
       );
+      console.log(`  ${label}: ${r.records[0].get('c').toNumber()} nodes with embeddings`);
     }
-    console.log(`  Stored embeddings for ${qacTexts.length} QACs`);
-
-    // Verify
-    const verifyParts = await session.run(
-      'MATCH (p:Part) WHERE p.embedding IS NOT NULL RETURN count(p) AS c'
-    );
-    const verifyQacs = await session.run(
-      'MATCH (q:QAC) WHERE q.embedding IS NOT NULL RETURN count(q) AS c'
-    );
-    console.log(`\nVerification: ${verifyParts.records[0].get('c').toNumber()} parts with embeddings, ${verifyQacs.records[0].get('c').toNumber()} QACs with embeddings`);
 
   } catch (error) {
     console.error('Embedding seed failed:', error);

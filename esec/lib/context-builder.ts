@@ -8,6 +8,7 @@ export const CONTEXT_BUDGET = {
   maxDocs: 2,
   maxConstraints: 5,
   maxVendorNotes: 2,
+  maxWorkflows: 2,
   maxTokensEstimate: 4000,
 } as const;
 
@@ -44,12 +45,21 @@ export const ConstraintContextSchema = z.object({
   description: z.string(),
 });
 
+export const WorkflowContextSchema = z.object({
+  workflowId: z.string(),
+  name: z.string(),
+  category: z.string(),
+  description: z.string(),
+  relevanceScore: z.number(),
+});
+
 // ─── Inferred Types ──────────────────────────────────────────────────────────
 
 export type PartContext = z.infer<typeof PartContextSchema>;
 export type QACContext = z.infer<typeof QACContextSchema>;
 export type DocContext = z.infer<typeof DocContextSchema>;
 export type ConstraintContext = z.infer<typeof ConstraintContextSchema>;
+export type WorkflowContext = z.infer<typeof WorkflowContextSchema>;
 
 // ─── GraphContext Interface ──────────────────────────────────────────────────
 
@@ -58,6 +68,7 @@ export interface GraphContext {
   qacs: QACContext[];
   docs: DocContext[];
   constraints: ConstraintContext[];
+  workflows: WorkflowContext[];
   tokenEstimate: number;
 }
 
@@ -98,6 +109,15 @@ interface LinkedConstraint {
   [key: string]: unknown;
 }
 
+interface RankedWorkflow {
+  workflowId: string;
+  name: string;
+  category: string;
+  description: string;
+  relevanceScore: number;
+  [key: string]: unknown;
+}
+
 // ─── Utility ─────────────────────────────────────────────────────────────────
 
 export function estimateTokens(obj: unknown): number {
@@ -111,12 +131,14 @@ export function buildContext(
   rankedQACs: RankedQAC[],
   rankedDocs: RankedDoc[],
   linkedConstraints: LinkedConstraint[],
+  rankedWorkflows: RankedWorkflow[] = [],
 ): GraphContext {
   // Step 1: Slice to top-K per budget
   const topParts = rankedParts.slice(0, CONTEXT_BUDGET.maxParts);
   const topQACs = rankedQACs.slice(0, CONTEXT_BUDGET.maxQACs);
   const topDocs = rankedDocs.slice(0, CONTEXT_BUDGET.maxDocs);
   const topConstraints = linkedConstraints.slice(0, CONTEXT_BUDGET.maxConstraints);
+  const topWorkflows = rankedWorkflows.slice(0, CONTEXT_BUDGET.maxWorkflows);
 
   // Step 2: Slim each item to schema fields with truncation
   const slimParts: PartContext[] = topParts.map((p) => ({
@@ -152,12 +174,21 @@ export function buildContext(
     description: c.description,
   }));
 
+  const slimWorkflows: WorkflowContext[] = topWorkflows.map((w) => ({
+    workflowId: w.workflowId,
+    name: w.name,
+    category: w.category ?? '',
+    description: w.description ?? '',
+    relevanceScore: w.relevanceScore,
+  }));
+
   // Step 3: Estimate tokens
   let context: Omit<GraphContext, 'tokenEstimate'> = {
     parts: slimParts,
     qacs: slimQACs,
     docs: slimDocs,
     constraints: slimConstraints,
+    workflows: slimWorkflows,
   };
 
   let tokenEstimate = estimateTokens(context);

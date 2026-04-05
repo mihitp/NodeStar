@@ -80,6 +80,24 @@ interface RawConstraintNode {
   [key: string]: unknown;
 }
 
+interface RawDocEmbeddedNode {
+  docId: string;
+  title: string;
+  docType: string;
+  content: string;
+  embedding?: number[] | null;
+  [key: string]: unknown;
+}
+
+interface RawWorkflowEmbeddedNode {
+  workflowId: string;
+  name: string;
+  category: string;
+  description: string;
+  embedding?: number[] | null;
+  [key: string]: unknown;
+}
+
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
 function toNumber(v: unknown): number {
@@ -144,6 +162,54 @@ async function searchQACs(
       .sort((a, b) => b.relevanceScore - a.relevanceScore)
       .slice(0, topK);
 
+    return scored;
+  } finally {
+    await session.close();
+  }
+}
+
+async function searchDocs(
+  queryEmbedding: number[],
+  topK: number,
+): Promise<Array<RawDocEmbeddedNode & { relevanceScore: number }>> {
+  const session = getDriver().session();
+  try {
+    const result = await session.run(
+      'MATCH (d:DesignDoc) WHERE d.embedding IS NOT NULL RETURN d',
+    );
+    const scored = result.records
+      .map((record) => {
+        const d = record.get('d').properties as RawDocEmbeddedNode;
+        const emb = extractEmbedding(d.embedding);
+        const score = emb ? cosineSimilarity(queryEmbedding, emb) : 0;
+        return { ...d, relevanceScore: score };
+      })
+      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .slice(0, topK);
+    return scored;
+  } finally {
+    await session.close();
+  }
+}
+
+async function searchWorkflows(
+  queryEmbedding: number[],
+  topK: number,
+): Promise<Array<RawWorkflowEmbeddedNode & { relevanceScore: number }>> {
+  const session = getDriver().session();
+  try {
+    const result = await session.run(
+      'MATCH (w:Workflow) WHERE w.embedding IS NOT NULL RETURN w',
+    );
+    const scored = result.records
+      .map((record) => {
+        const w = record.get('w').properties as RawWorkflowEmbeddedNode;
+        const emb = extractEmbedding(w.embedding);
+        const score = emb ? cosineSimilarity(queryEmbedding, emb) : 0;
+        return { ...w, relevanceScore: score };
+      })
+      .sort((a, b) => b.relevanceScore - a.relevanceScore)
+      .slice(0, topK);
     return scored;
   } finally {
     await session.close();
@@ -226,22 +292,36 @@ export async function processQuestion(question: string, skillContext?: string): 
   // Step 1: Generate embedding for the question
   const queryEmbedding = await generateEmbedding(question);
 
-  // Step 2a: Search parts and QACs in parallel (both need query embedding only)
-  const [rankedParts, rankedQACs] = await Promise.all([
+  // Step 2a: Search parts, QACs, docs, and workflows in parallel
+  const [rankedParts, rankedQACs, rankedDocs, rankedWorkflows] = await Promise.all([
     searchParts(queryEmbedding, 15),
     searchQACs(queryEmbedding, 10),
+    searchDocs(queryEmbedding, 5),
+    searchWorkflows(queryEmbedding, 5),
   ]);
 
-  // Step 2b: Extract top part IDs, then fetch docs and constraints in parallel
+  // Step 2b: Extract top part IDs, then fetch linked docs and constraints in parallel
   const topPartIds = rankedParts.slice(0, 15).map((p) => p.partId);
 
-  const [rawDocs, rawConstraints] = await Promise.all([
+  const [linkedDocs, rawConstraints] = await Promise.all([
     fetchDocsForParts(topPartIds),
     fetchConstraintsForParts(topPartIds),
   ]);
 
+  // Merge directly-searched docs with part-linked docs (deduplicate by docId)
+  const docMap = new Map<string, typeof rankedDocs[number]>();
+  for (const d of rankedDocs) docMap.set(d.docId, d);
+  for (const d of linkedDocs) {
+    if (!docMap.has(d.docId)) {
+      docMap.set(d.docId, { ...d, relevanceScore: 0 });
+    }
+  }
+  const mergedDocs = Array.from(docMap.values()).sort(
+    (a, b) => b.relevanceScore - a.relevanceScore,
+  );
+
   // Step 3: Build slim context within token budget
-  const context: GraphContext = buildContext(rankedParts, rankedQACs, rawDocs, rawConstraints);
+  const context: GraphContext = buildContext(rankedParts, rankedQACs, mergedDocs, rawConstraints, rankedWorkflows);
 
   // Step 4: Call LLM with question, slim context, and optional skill context
   const llmResponse = await generateQACResponse(question, context, skillContext);

@@ -19,6 +19,8 @@ Make sure they sub agents talk to you, and you are aware of the progress. if str
 
 You can use the TDD agent, but dont over use it. otherwise it will take too long to build basic features. use the skills, agents, and MCP servers available for ease.  You can run a mild version of TDD when each phase is done
 
+NEVER DELETE / SKIP OVER TESTS IF THEY DONT PASS
+
 
 
 

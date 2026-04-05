@@ -88,6 +88,14 @@ export function formatContextForPrompt(question: string, context: GraphContext):
     sections.push(constraintLines.join('\n'));
   }
 
+  if (context.workflows && context.workflows.length > 0) {
+    sections.push('## Relevant Workflows');
+    const workflowLines = context.workflows.map(
+      (w) => `[${w.workflowId}] ${w.name} (${w.category}) — ${w.description} (match: ${w.relevanceScore.toFixed(2)})`,
+    );
+    sections.push(workflowLines.join('\n'));
+  }
+
   return sections.join('\n\n');
 }
 
