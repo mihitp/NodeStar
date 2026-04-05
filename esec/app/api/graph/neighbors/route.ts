@@ -4,15 +4,16 @@ import { getDriver } from '@/lib/neo4j';
 export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
-    const { nodeId, nodeLabel, depth = 2 } = body as {
-      nodeId: string;
-      nodeLabel: string;
+    const { nodeId, nodeLabel, depth = 2, fullGraph = false } = body as {
+      nodeId?: string;
+      nodeLabel?: string;
       depth?: number;
+      fullGraph?: boolean;
     };
 
-    if (!nodeId || !nodeLabel) {
+    if (!fullGraph && (!nodeId || !nodeLabel)) {
       return NextResponse.json(
-        { error: 'nodeId and nodeLabel are required' },
+        { error: 'nodeId and nodeLabel are required (or set fullGraph: true)' },
         { status: 400 }
       );
     }
@@ -30,28 +31,38 @@ export async function POST(request: NextRequest) {
       Constraint: 'constraintId',
     };
 
-    const idProp = idPropMap[nodeLabel];
-    if (!idProp) {
-      return NextResponse.json(
-        { error: `Unknown node label: ${nodeLabel}` },
-        { status: 400 }
-      );
-    }
-
-    const clampedDepth = Math.min(Math.max(1, depth), 3);
-
     const session = getDriver().session();
     try {
-      const result = await session.run(
-        `MATCH path = (n:\`${nodeLabel}\` {${idProp}: $nodeId})-[*1..${clampedDepth}]-(m)
-         UNWIND relationships(path) AS rel
-         WITH COLLECT(DISTINCT startNode(rel)) + COLLECT(DISTINCT endNode(rel)) AS allNodes,
-              COLLECT(DISTINCT rel) AS allRels
-         UNWIND allNodes AS node
-         WITH COLLECT(DISTINCT node) AS nodes, allRels
-         RETURN nodes, allRels`,
-        { nodeId }
-      );
+      let result;
+
+      if (fullGraph) {
+        // Return ALL nodes and relationships
+        result = await session.run(
+          `MATCH (n)
+           OPTIONAL MATCH (n)-[r]->()
+           WITH COLLECT(DISTINCT n) AS nodes, COLLECT(DISTINCT r) AS allRels
+           RETURN nodes, [r IN allRels WHERE r IS NOT NULL] AS allRels`
+        );
+      } else {
+        const idProp = idPropMap[nodeLabel!];
+        if (!idProp) {
+          return NextResponse.json(
+            { error: `Unknown node label: ${nodeLabel}` },
+            { status: 400 }
+          );
+        }
+        const clampedDepth = Math.min(Math.max(1, depth), 3);
+        result = await session.run(
+          `MATCH path = (n:\`${nodeLabel}\` {${idProp}: $nodeId})-[*1..${clampedDepth}]-(m)
+           UNWIND relationships(path) AS rel
+           WITH COLLECT(DISTINCT startNode(rel)) + COLLECT(DISTINCT endNode(rel)) AS allNodes,
+                COLLECT(DISTINCT rel) AS allRels
+           UNWIND allNodes AS node
+           WITH COLLECT(DISTINCT node) AS nodes, allRels
+           RETURN nodes, allRels`,
+          { nodeId }
+        );
+      }
 
       if (result.records.length === 0) {
         return NextResponse.json({ nodes: [], links: [] });

@@ -88,6 +88,14 @@ export function formatContextForPrompt(question: string, context: GraphContext):
     sections.push(constraintLines.join('\n'));
   }
 
+  if (context.workflows && context.workflows.length > 0) {
+    sections.push('## Relevant Workflows');
+    const workflowLines = context.workflows.map(
+      (w) => `[${w.workflowId}] ${w.name} (${w.category}) — ${w.description} (match: ${w.relevanceScore.toFixed(2)})`,
+    );
+    sections.push(workflowLines.join('\n'));
+  }
+
   return sections.join('\n\n');
 }
 
@@ -96,16 +104,21 @@ export function formatContextForPrompt(question: string, context: GraphContext):
 export async function generateQACResponse(
   question: string,
   context: GraphContext,
+  skillContext?: string,
 ): Promise<QACResponse> {
   const userContent = formatContextForPrompt(question, context);
   const contextTokenEstimate = estimateTokens(context);
+
+  const systemPrompt = skillContext
+    ? `${SYSTEM_PROMPT}\n\n## Active Skill Context\n${skillContext}`
+    : SYSTEM_PROMPT;
 
   const startMs = Date.now();
 
   const message = await getClient().messages.create({
     model: MODEL,
     max_tokens: MAX_TOKENS,
-    system: SYSTEM_PROMPT,
+    system: systemPrompt,
     messages: [{ role: 'user', content: userContent }],
   });
 
